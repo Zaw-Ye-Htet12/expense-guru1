@@ -7,6 +7,7 @@ import { getRelevantRoute } from "@/lib/route";
 import { Route } from "@/enums/route";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/components/context/AuthContext";
+import { Sign } from "crypto";
 
 export interface User{
     username:string;
@@ -17,20 +18,30 @@ export function useLogin(){
     const {errorToast} = useToastHook();
     const [loading,setLoading] = useState<boolean>(false);
     const [isLoggedIn,setIsLoggedIn] = useState<boolean>(false)
-    const router = useRouter();
-    const {authUser,setAuthUser} = useContext(AuthContext);
-
-
-    const setLoggedInUserData = async()=>{
-
-    }
+    const router = useRouter();   
+    // const {authUser,setAuthUser} = useContext();
+    const setLoggedInUserData = async () => {
+        try {
+          const {data: { data }} = await axiosInstance.get("users/auth/me");
+          const userData = {
+            username: data.username,
+            email: data.email,
+          };
+          localStorage.setItem("userData", JSON.stringify(userData));
+        //   setAuthUser(userData);
+          return userData;
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      };
 
     const login=async (user:SignInType) =>{
         try{
             setLoading(true);
-            const {status} = await axiosInstance.post("/users/login",user);
+            const {status,data} = await axiosInstance.post("/users/login",user);
             if(status === HttpStatus.CREATED){
-                
+                await setLoggedInUserData();
                 setIsLoggedIn(true);
             }
 
