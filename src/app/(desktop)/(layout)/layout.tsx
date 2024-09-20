@@ -1,15 +1,15 @@
+import Header from "@/components/desktop/header";
+import SideMenu from "@/components/desktop/side-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";
 
 const DesktopLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col h-dvh">
-      <div className="w-full h-10 bg-white bg-opacity-50 flex flex-row justify-between items-center ">
-        <div>Hello</div>
-        <div>World</div>
-      </div>
+      <Header />
       <div className="flex h-[calc(100dvh-64px)]">
-        <div className="w-[15%] h-dvh border-r border-secondary bg-[#488d88]"></div>
-        <div>{children}</div>
+        <SideMenu />
+        <ScrollArea className="grow h-full">{children}</ScrollArea>
       </div>
     </div>
   );
