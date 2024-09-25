@@ -1,13 +1,52 @@
-import React from 'react'
-import {transactions} from '@/utils/data';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import EmptyData from "@/components/common/emptyData";
+// import FormattedTransactionAmount from "@/components/common/formattedTransactionAmount";
+// import ListSkeleton from "@/components/common/listSkeleton";
+import { Route } from "@/enums/route";
+// import { useTransaction } from "@/hooks/useTransaction";
+import { Transaction } from "@/types/transaction";
+import {transactions} from '@/utils/data'
+import { getRelevantRoute } from "@/lib/route";
+import dayjs from "dayjs";
+import Link from "next/link";
+import InfiniteScroll from "react-infinite-scroll-component";
+import FormattedTransactionAmount from "@/components/common/formattedTransactionAmount";
 
-const TransactionList = ({className}: {className?: string}) => {
+const TransactionList = ({
+  className,
+  height,
+}: {
+  className?: string;
+  height?: number;
+}) => {
+  // const { transactions, fetchMore, hasMore, isFetching } = useTransaction();
   return (
-    <div className={`${className} overflow-auto w-full p-4 h-full`}  id='scrollableDiv'>
-      {/* <InfiniteScroll dataLength={transactions.length}/> */}
+    <div
+      className={`relative overflow-y-scroll w-full px-4 ${className} pb-[50px] h-full scrollbar-hide`}
+      style={{ height: height + "px" }}
+      id="scrollableDiv"
+    >
+      {transactions.length > 0 ? (
+        transactions.map((item: Transaction, index: number) => (
+          <Link
+            href={`${getRelevantRoute(Route.TRANSACTION)}/${item._id}`}
+            key={`item-${index}-${item._id}`}
+            className="flex justify-between w-full items-center border-b border-slate-100 my-1"
+          >
+            <div className="flex flex-col py-2">
+              <div className="font-medium text-md">
+                {item.category?.name || "Uncategorized"}
+              </div>
+              <div className="text-sm text-slate-400">
+                {dayjs(item.createdAt).format("MMMM D, YYYY")}
+              </div>
+            </div>
+            <FormattedTransactionAmount amount={item.amount} type={item.type} />
+          </Link>
+        ))
+      ) : (
+        <EmptyData dataName="transactions" />
+      )}
     </div>
-  )
-}
-
-export default TransactionList
+  );
+};
+export default TransactionList;

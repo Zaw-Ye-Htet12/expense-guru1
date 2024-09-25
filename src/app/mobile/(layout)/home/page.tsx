@@ -13,6 +13,7 @@ import WithSuspense from "@/components/common/withSuspense";
 import IncomeArrow from "../../../../../public/income-arrow.png";
 import ExpenseArrow from "../../../../../public/expense-arrow.png";
 import TransactionList from "@/components/mobile/transaction/transactionList";
+import Logout from "@/components/common/logout";
 
 const HomePage = () => {
   const { authUser } = useLogin();
@@ -33,7 +34,7 @@ const HomePage = () => {
                   </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-24 mr-5 bg-white border-none p-2">
-                  <div>Logout</div>
+                  <Logout/>
                 </PopoverContent>
               </Popover>
             </div>
@@ -45,12 +46,12 @@ const HomePage = () => {
             priority
           ></Image>
         </div>
-        <div className="flex flex-col absolute w-full top-40">
+        <div className="flex flex-col absolute w-full top-[100px]">
           <div>
             <BalanceCard />
           </div>
           <div className="grow">
-            <span className="text-lg font-medium text-slate-500 px-4">
+            <span className="text-md font-medium text-slate-500 px-4">
               Transaction History
             </span>
             <TransactionList/>
@@ -68,10 +69,10 @@ const BalanceCard = () => {
     <div className="flex flex-col items-center justify-center">
       <div className="h-[180px] w-[90%] rounded-xl p-3 bg-[#2f7e79] flex flex-col justify-between items-start">
         <div className="text-white">
-          <span className="text-md poppins font-bold">Total Balance</span>
-          <div className="text-2xl font-bold poppins">3,000,000</div>
+          <span className="text-base poppins">Total Balance</span>
+          <div className="text-xl font-bold poppins">3,000,000</div>
         </div>
-        <div className="flex justify-between w-full poppins font-bold">
+        <div className="flex justify-between w-full poppins">
           <div className="flex flex-col">
             <div className="flex gap-2 items-center">
               <span className="text-sm text-slate-300">Income</span>

@@ -51,5 +51,24 @@ export const categories: Categories[] = [
       walletId: 'wallet3',
       createdAt: new Date().toISOString(),
     },
+    {
+      _id: 'trans5',
+      amount: 20.0,
+      type: 'expense',
+      category: {
+        name: 'Transportation',
+      },
+      walletId: 'wallet3',
+      createdAt: new Date().toISOString(),
+    }, {
+      _id: 'trans6',
+      amount: 20.0,
+      type: 'income',
+      category: {
+        name: 'Transportation',
+      },
+      walletId: 'wallet3',
+      createdAt: new Date().toISOString(),
+    },
   ];
   
