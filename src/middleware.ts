@@ -32,7 +32,7 @@ export default async function middleware(req: NextRequest) {
   const token = req.cookies.get("authToken")?.value ?? "";
   const isPubliPath = publicPaths.includes(pathname);
 
-  if (!isAPIRoute(pathname)) {
+  if (!isAPIRoute(pathname) && !pathname.includes("auth")) {
     if (isMobileDevice && !isMobileRoute(pathname)) {
       return redirectTo(MOBILE_HOME_PAGE, req);
     } else if (!isMobileDevice && isMobileRoute(pathname)) {

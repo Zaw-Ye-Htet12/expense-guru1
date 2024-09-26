@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { ExitIcon } from "@radix-ui/react-icons";
+import Logout from "../common/logout";
 
 
 export default function SideMenu() {
@@ -38,7 +39,7 @@ export default function SideMenu() {
                 >
                     <div className="w-full flex items-center gap-3 text-base">
                         <ExitIcon className="w-4 h-4" />
-                        <span>Logout</span>
+                        <Logout/>
                     </div>
                 </Button>
             </nav>

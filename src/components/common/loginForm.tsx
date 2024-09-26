@@ -23,64 +23,69 @@ const LoginForm = ({ className = "w-full" }: { className?: string }) => {
   return (
     <>
       <Formik
-      initialValues={{
-        email: "",
-        password: "",
-      }}
-      validationSchema={toFormikValidationSchema(signInValidation)}
-      onSubmit={handleSubmit}
-    >
-      <Form className={className}>
-        <CardContent>
-          <div className="space-y-3.5">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <FormField
-                as={Input}
-                name="email"
-                type="email"
-                id="email"
-                placeholder="name@example.com"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <FormField
-                name="password"
-                type="password"
-                as={Input}
-                id="password"
-              />
-            </div>
-            <Button
-              className="w-full"
-              type="submit"
-              variant="gooeyLeft"
-              disabled={loading}
-            >
-              {loading ? <Loading /> : "Login"}
-            </Button>
-      
-            <Label className="text-center w-full flex justify-center">
-              Do not have an account?
-              <Link
-                href={getRelevantRoute(Route.SIGNUP)}
-                className="text-primary ml-2"
-              >
-                Signup
-              </Link>
-            </Label>
-          </div>
-        </CardContent>
-      </Form>
-    </Formik>
-    <button
-        onClick={() => {
-          window.location.href = "http://localhost:8000/api/v1/auth/google";
+        initialValues={{
+          email: "",
+          password: "",
         }}
+        validationSchema={toFormikValidationSchema(signInValidation)}
+        onSubmit={handleSubmit}
       >
-        Sign in with Google
-      </button>
+        <Form className={className}>
+          <CardContent>
+            <div className="space-y-3.5">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <FormField
+                  as={Input}
+                  name="email"
+                  type="email"
+                  id="email"
+                  placeholder="name@example.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <FormField
+                  name="password"
+                  type="password"
+                  as={Input}
+                  id="password"
+                />
+              </div>
+              <Button
+                className="w-full"
+                type="submit"
+                variant="gooeyLeft"
+                disabled={loading}
+              >
+                {loading ? <Loading /> : "Login"}
+              </Button>
+              <div className="flex w-full justify-center items-center">Or</div>
+              <Button
+                className="w-full bg-white text-[#51A7A1] border"
+                variant="ghost"
+                type="button"
+                onClick={() => {
+                  window.location.href =
+                    "http://localhost:8000/api/v1/auth/google";
+                }}
+              >
+                Sign in with Google
+              </Button>
+
+              <Label className="text-center w-full flex justify-center">
+                Do not have an account?
+                <Link
+                  href={getRelevantRoute(Route.SIGNUP)}
+                  className="text-primary ml-2"
+                >
+                  Signup
+                </Link>
+              </Label>
+          </div>
+          </CardContent>
+        </Form>
+      </Formik>
     </>
   );
 };
