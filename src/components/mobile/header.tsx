@@ -3,6 +3,7 @@ import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Route } from '@/enums/route';
 
+
 const Header = () => {
     const {back} = useRouter();
     const currentPath = usePathname();
