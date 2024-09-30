@@ -1,15 +1,18 @@
+"use client"
 import React from "react";
 import { MOBILE_FOOTER } from "@/constants/route";
 import Link from "next/link";
-import { getRelevantRoute } from "@/lib/route";
+import { getMobileRoute, getRelevantRoute } from "@/lib/route";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
+  const pathname = usePathname();
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full bg-white border border-t border-gray-300">
+    <div className="fixed bottom-0 left-0 right-0 w-full bg-white border border-t border-gray-300 z-50">
       <div className="flex justify-around items-center gap-0">
         {MOBILE_FOOTER.map((item) => (
-          <Link href={getRelevantRoute(item.route)} key={item.route}>
+          <Link href={getMobileRoute(item.route)} key={item.route}>
             <div
               className={`${
                 item.name === "add" &&
