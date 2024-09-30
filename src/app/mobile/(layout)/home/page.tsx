@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import BG from "../../../../../public/home-bg.png";
 import Image from "next/image";
 import { useLogin } from "@/hooks/useLogin";
@@ -14,9 +14,25 @@ import IncomeArrow from "../../../../../public/income-arrow.png";
 import ExpenseArrow from "../../../../../public/expense-arrow.png";
 import TransactionList from "@/components/mobile/transaction/transactionList";
 import Logout from "@/components/common/logout";
+import TotalBalance from "@/components/common/totalBalance";
+import { TotalIncome } from "@/components/common/totalIncome";
+import TotalExpense from "@/components/common/totalExpense";
 
 const HomePage = () => {
   const { authUser } = useLogin();
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const viewHeight = window.innerHeight;
+      const imageHeight = imageRef.current ? imageRef.current?.clientHeight : 0;
+      const availableHeight = viewHeight - imageHeight - 100; // Adjust as needed
+      setHeight(availableHeight);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
     <WithSuspense>
       <div className="relative">
@@ -34,16 +50,26 @@ const HomePage = () => {
                   </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-24 mr-5 bg-white border-none p-2">
-                  <Logout/>
+                  <Logout />
                 </PopoverContent>
               </Popover>
             </div>
           </div>
           <Image
             src={BG}
+            ref={imageRef}
             alt="background image"
             className="w-screen"
             priority
+            onLoad={() =>
+              setTimeout(
+                () =>
+                  setHeight(
+                    window.innerHeight - imageRef.current?.clientHeight! - 100
+                  ),
+                100
+              )
+            }
           ></Image>
         </div>
         <div className="flex flex-col absolute w-full top-[100px]">
@@ -54,9 +80,9 @@ const HomePage = () => {
             <span className="text-md font-medium text-slate-500 px-4">
               Transaction History
             </span>
-            <TransactionList/>
+            <TransactionList height={height} />
           </div>
-        </div>  
+        </div>
       </div>
     </WithSuspense>
   );
@@ -69,8 +95,10 @@ const BalanceCard = () => {
     <div className="flex flex-col items-center justify-center">
       <div className="h-[180px] w-[90%] rounded-xl p-3 bg-[#2f7e79] flex flex-col justify-between items-start">
         <div className="text-white">
-          <span className="text-base poppins">Total Balance</span>
-          <div className="text-xl font-bold poppins">3,000,000</div>
+          <span className="text-sm">Total balance</span>
+          <span className="text-3xl">
+            <TotalBalance className="font-semibold" />
+          </span>
         </div>
         <div className="flex justify-between w-full poppins">
           <div className="flex flex-col">
@@ -78,7 +106,7 @@ const BalanceCard = () => {
               <span className="text-sm text-slate-300">Income</span>
               <Image src={IncomeArrow} alt="income show arrow" />
             </div>
-            <div className="text-white">3,000</div>
+            <TotalIncome className="text-xl font-semibold text-white"/>
           </div>
           <div className="flex flex-col">
             <div className="flex gap-2 items-center">
@@ -89,7 +117,7 @@ const BalanceCard = () => {
                 className="text-white"
               />
             </div>
-            <div className="text-white">3,000</div>
+            <TotalExpense className="text-xl font-semibold text-white"/> 
           </div>
         </div>
       </div>

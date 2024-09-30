@@ -2,9 +2,10 @@ export interface Transaction {
   _id: string;
   amount: number;
   type: string;
-  category: {
+  categoryId: {
     name: string;
   };
   walletId: string;
   createdAt: string;
+  updatedAt: string;
 }
