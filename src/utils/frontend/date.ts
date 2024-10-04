@@ -54,3 +54,6 @@ declare module "dayjs" {
 
   export function greet(): string;
 }
+
+export const formatDate = (date: string) => dayjs(date).format("MMM DD, YYYY");
+export const formatTime = (date: string) => dayjs(date).format("h:mm A"); 

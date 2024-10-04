@@ -52,8 +52,8 @@ export default function CategoryList() {
     const openEditDialog = (categoryId: string) => {
       setCurrentEditCategoryId(categoryId);
       setIsEditDialogOpen(true);
-    };
-    console.log(categories)
+  };
+
     return (
         <div className="h-[92%] w-full bg-slate-50 absolute bottom-0 rounded-t-[30px] px-4 py-5 flex flex-col items-center justify-start">
             <div className="flex justify-center w-[90%]">

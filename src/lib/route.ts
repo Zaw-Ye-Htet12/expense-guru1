@@ -9,7 +9,7 @@ export const isAPIRoute = (path?: string) => {
 
 export const isMobileRoute = (path: string) => {
   return path?.includes(MOBILE_HOME_PAGE)
-} 
+}
 
 export const isMobile = (providedUserAgent?: string): boolean => {
   const userAgent = typeof window !== "undefined" ? navigator.userAgent : providedUserAgent;
@@ -26,5 +26,11 @@ export const getMobileRoute = (path: Route) => {
 }
 
 export const getRelevantRoute = (path: Route) => {
-  return isMobile() ?  getMobileRoute(path) : path;
+  return isMobile() ? getMobileRoute(path) : path;
+}
+
+export const createQueryString = (name: string, value: string, searchParams: string) => {
+  const param = new URLSearchParams(searchParams);
+  param.set(name, value);
+  return param;
 }
