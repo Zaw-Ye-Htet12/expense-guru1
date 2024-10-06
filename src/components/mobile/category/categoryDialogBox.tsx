@@ -11,7 +11,7 @@ import { Dispatch, SetStateAction } from "react";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
 interface Props {
-    trigger: React.ReactNode;
+    trigger?: React.ReactNode;
     isEditDialog?: boolean;
     editItem?: Categories;
     isOpen?: boolean;
