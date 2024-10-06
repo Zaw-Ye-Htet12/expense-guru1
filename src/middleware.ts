@@ -7,7 +7,7 @@ import { Route } from "./enums/route";
 
 const publicPaths = [
   "/",
-  "/mobile/",
+  "/mobile",
   "/login",
   "/signup",
   "/welcome",

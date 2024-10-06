@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import AuthProvider from "@/components/providers/AuthProvider";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const poppins = Poppins({
@@ -28,9 +29,15 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased p-0 m-0",
-          inter.variable, poppins.variable
+          inter.variable,
+          poppins.variable
         )}
       >
+        <NextTopLoader
+          color="#59bfbf"
+          speed={300}
+          showSpinner={false}
+        ></NextTopLoader>
         <AuthProvider>{children}</AuthProvider>
         <Toaster />
       </body>

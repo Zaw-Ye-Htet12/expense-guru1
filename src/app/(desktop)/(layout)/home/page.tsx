@@ -5,6 +5,8 @@ import TotalBalance from "@/components/common/totalBalance";
 import Greeting from "@/components/common/greeting";
 import FinanceCard from "@/components/desktop/financeCard";
 import Image from "next/image";
+import { TotalIncome } from "@/components/common/totalIncome";
+import TotalExpense from "@/components/common/totalExpense";
 
 const Page = () => {
   const { authUser } = useLogin();
@@ -18,13 +20,13 @@ const Page = () => {
       label: "Income",
       img: { src: "/income-icon.png", alt: "Income icon" },
       badgeClass: "bg-primary-transparent",
-      // children: <TotalIncome className="font-bold text-3xl" />,
+      children: <TotalIncome className="font-bold text-3xl" />,
     },
     {
       label: "Expense",
       img: { src: "/expense-icon.png", alt: "Expense icon" },
       badgeClass: "bg-destructive-transparent",
-      // children: <TotalExpense className="font-bold text-3xl" />,
+      children: <TotalExpense className="font-bold text-3xl" />,
     },
   ];
   return (
