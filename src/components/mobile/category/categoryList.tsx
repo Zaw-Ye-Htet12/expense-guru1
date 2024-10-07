@@ -27,6 +27,7 @@ export default function CategoryList() {
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [currentEditCategoryId, setCurrentEditCategoryId] =
     useState<string>("");
   const handleCreate = async (category: CategoryType) => {
@@ -35,12 +36,14 @@ export default function CategoryList() {
   }
 
   const togglePopover = (categoryId: string) => {
-    setOpenPopoverId(openPopoverId === categoryId ? null : categoryId)
+    setOpenPopoverId(openPopoverId === categoryId ? null : categoryId);
+    setIsDeleteDialogOpen(false)
   }
 
   const handleDelete = async (categoryId: string) => {
     await deleteCategory(categoryId);
     setOpenPopoverId(null)
+    setIsDeleteDialogOpen(false)
   }
 
   const handleEdit = async (category: { name: string; _id: string }) => {
@@ -88,16 +91,16 @@ export default function CategoryList() {
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className="w-24 mr-4 py-2 px-2">
-                        <DeleteModal
-                          asMobile
-                          trigger={
-                            <span className="flex items-center text-red-700 cursor-pointer">
-                              Delete
-                            </span>
-                          }
-                          onCancel={() => togglePopover(category._id)}
-                          onDelete={() => handleDelete(category._id)}
-                        />
+                        <span className="flex items-center text-red-700 cursor-pointer" 
+                                onClick={()=>setIsDeleteDialogOpen(true)}>Delete</span>
+                        {isDeleteDialogOpen && (
+                          <DeleteModal
+                            asMobile
+                            isOpen={isDeleteDialogOpen}
+                            onCancel={() => togglePopover(category._id)}
+                            onDelete={() => handleDelete(category._id)}
+                          />
+                        )}
                         <CategoryDialogBox
                           isEditDialog
                           handleSubmit={(editedCategory) =>

@@ -22,6 +22,8 @@ export default function CategoryPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [currentEditCategory, setCurrentEditCategory] = useState<Cateogry | null>(null);
+  const [selectedCategories,setSelectedCategories] = useState<string[]>([]);
+  const [isDeleteDialogOpen,setIsDeleteDialogOpen] = useState<boolean>(false);
 
   const columns: ColumnDef<Cateogry>[] = [
     {
@@ -32,14 +34,25 @@ export default function CategoryPage() {
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value);
+            if (value) {
+              const allCategoryIds = categories.map((category) => category._id);
+              setSelectedCategories(allCategoryIds);
+            } else {
+              setSelectedCategories([]);
+            }
+          }}
           aria-label="Select all"
         />
       ),
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+            handleRowSelection(row.original._id,value);
+          }}
           aria-label="Select row"
         />
       ),
@@ -72,12 +85,17 @@ export default function CategoryPage() {
             <Button
               variant="outline"
               size="sm"
-              // Trigger edit logic
               onClick={() => openEditDialog(row.original)}
             >
               Edit
             </Button>
-            {handleDelete(row.original._id)}  
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => openDeleteDialog(row.original)}
+            >
+              Delete
+            </Button>
           </div>
         )
       }
@@ -85,26 +103,41 @@ export default function CategoryPage() {
 
   ];
 
+  const handleRowSelection = (id: string, isSelected: string | boolean) => {
+    setSelectedCategories((prev) => {
+      if (isSelected) {
+        return [...prev, id];
+      } else {
+        return prev.filter((categoryId) => categoryId !== id);
+      }
+    });
+  };
+
+  const deleteSelectedCategories = async () => {
+    for (const categoryId of selectedCategories) {
+      await deleteCategory(categoryId);
+    }
+    setSelectedCategories([]); 
+  };
+
   const openEditDialog = (category: Cateogry) => {
     setCurrentEditCategory(category);
     setIsEditDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    return (
-      <DeleteModal
-        trigger={
-          <Button variant="destructive" size="sm">
-            Delete
-          </Button>
-        }
-        onCancel={() => setOpenPopoverId(null)}
-        onDelete={async () => {
-          await deleteCategory(id);
-          setOpenPopoverId(null);
-        }}
-      />
-    );
+  const openDeleteDialog = (category: Cateogry) => {
+    setCurrentEditCategory(category);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async(id: string) => {
+    if(currentEditCategory){
+      await deleteCategory(id);
+      setIsDeleteDialogOpen(false);
+      setCurrentEditCategory(null)
+      setSelectedCategories((prev)=>prev.filter((categoryId)=>categoryId !== id))
+    }
+    setSelectedCategories([])
   };
   const handleEdit = async (category: { name: string; _id: string }) => {
     if (currentEditCategory) {
@@ -130,7 +163,20 @@ export default function CategoryPage() {
             setIsOpen={setIsCreateDialogOpen}
             isLoading={loading}
           />
-          <DataTable isLoading={isFetching} columns={columns} data={categories} />
+           {selectedCategories.length > 0 && (
+            <Button variant="destructive" onClick={deleteSelectedCategories} className="ms-2">
+              Delete Selected ({selectedCategories.length})
+            </Button>
+          )}
+
+          {isDeleteDialogOpen && currentEditCategory && (
+            <DeleteModal
+            isOpen={isDeleteDialogOpen}
+            onCancel={() => setIsDeleteDialogOpen(false)}
+            onDelete={()=>handleDelete(currentEditCategory._id)}
+          />
+          )}
+          <DataTable key={categories.length} isLoading={isFetching} columns={columns} data={categories} />
 
           {isEditDialogOpen && currentEditCategory && (
             <CategoryDialogBox

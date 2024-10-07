@@ -17,7 +17,8 @@ interface Props {
     onCancel: () => void;
     onDelete: () => void;
     title?: string,
-    asMobile?: boolean
+    asMobile?: boolean,
+    isOpen?:boolean
 }
 
 const DeleteModal = ({
@@ -27,7 +28,8 @@ const DeleteModal = ({
     onCancel,
     onDelete,
     title="Are you sure you want to delete?",
-    asMobile
+    asMobile,
+    isOpen
 }: Props) => {
 
     const handleCancel = ()=>{
@@ -38,8 +40,7 @@ const DeleteModal = ({
     }
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
+        <Dialog open={isOpen} onOpenChange={onCancel}>
             <DialogContent className={asMobile ? "w-[90%]" : "w-full"}>
                 <DialogHeader className="pt-5">
                     <DialogTitle>{title}</DialogTitle>
