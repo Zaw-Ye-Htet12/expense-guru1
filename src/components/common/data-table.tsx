@@ -28,19 +28,21 @@ import Link from "next/link"
 import CategoryDialogBox from "../mobile/category/categoryDialogBox"
 import { useCategory } from "@/hooks/useCategory"
 import EmptyData from "./emptyData";
+import ListSkeleton from "./listSkeleton";
 
 
 interface DataTableProps<TData, TValue> {
   columns: any,
   data: TData[],
   isLoading: boolean,
+  filterableColumns:string[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading,
-   
+  filterableColumns   
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -61,15 +63,18 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center justify-between py-4">
-        <Input
-          placeholder="Filter categories..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <div className="flex items-center py-4 gap-1">
+      {filterableColumns.map((columnKey) => (
+          <Input
+            key={columnKey}
+            placeholder={`Filter by ${columnKey==="categoryId" ? 'category' : columnKey}...`}
+            value={(table.getColumn(columnKey)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(columnKey)?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        ))}
       </div>
       <div className="rounded-md border">
         <Table>
@@ -95,9 +100,7 @@ export function DataTable<TData, TValue>({
             {isLoading && data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  <div className="flex justify-center items-center">
-                    <span>Loading...</span>
-                  </div>
+                  <ListSkeleton />
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (

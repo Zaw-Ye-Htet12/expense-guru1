@@ -17,17 +17,19 @@ interface SelectBoxProps<T> extends FieldProps {
   dataLength?: number;
   optionValue?: string;
   optionName?: string;
+  className?:string
 }
 const SelectBox = <T extends Record<string, any>>({
   options,
   field,
   form,
-  placeholder = "Select ...",
+  placeholder = "Select ",
   fetchMore = () => {},
   hasMore = false,
   dataLength = 0,
   optionValue = "_id",
   optionName = "name",
+  className
 }: SelectBoxProps<T>) => {
   const [selectValue, setSelectValue] = useState(field.value || "");
 
@@ -52,7 +54,7 @@ const SelectBox = <T extends Record<string, any>>({
       </SelectTrigger>
       <SelectContent>
         <div
-          className="w-full h-72 grow overflow-auto scrollbar-hide"
+          className={`grow overflow-auto scrollbar-hide ${className}`}
           id="scrollableDiv"
         >
           <InfiniteScroll

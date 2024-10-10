@@ -9,6 +9,6 @@ export enum Route {
     PROFILE = "/profile",
     ADD = "/add",
     CATEGORY = "/category",
-    TRANSACTION = "/transaction",
+    TRANSACTION = "/transactions",
   }
   

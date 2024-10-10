@@ -176,7 +176,7 @@ export default function CategoryPage() {
             onDelete={()=>handleDelete(currentEditCategory._id)}
           />
           )}
-          <DataTable key={categories.length} isLoading={isFetching} columns={columns} data={categories} />
+          <DataTable key={categories.length} isLoading={isFetching} columns={columns} data={categories} filterableColumns={['name']}/>
 
           {isEditDialogOpen && currentEditCategory && (
             <CategoryDialogBox

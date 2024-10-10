@@ -62,7 +62,7 @@ const TransactionDetail = ({ params: { id } }: { params: { id: string } }) => {
                     </div>
                     <div className="flex flex-row justify-between items-center py-4">
                       <div>From</div>
-                      <div>{transaction.categoryId.name}</div>
+                      <div>{transaction.categoryId?.name || "Uncategorized"}</div>
                     </div>
                     <div className="flex flex-row justify-between items-center py-4">
                       <div>Time</div>
