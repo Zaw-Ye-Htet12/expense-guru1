@@ -17,11 +17,23 @@ import Logout from "@/components/common/logout";
 import TotalBalance from "@/components/common/totalBalance";
 import { TotalIncome } from "@/components/common/totalIncome";
 import TotalExpense from "@/components/common/totalExpense";
+import MonthSelectBox from "@/components/common/monthFilter";
+import { useTab } from "@/hooks/useTab";
 
 const HomePage = () => {
   const { authUser } = useLogin();
   const imageRef = useRef<HTMLImageElement>(null);
   const [height, setHeight] = useState(0);
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const { handleTabChange } = useTab();
+
+  const handleOnChangeMonth = (value: string) => {
+    setSelectedMonth(value);
+  };
+
+  useEffect(() => {
+    handleTabChange(selectedMonth, "month")
+  }, [selectedMonth])
 
   useEffect(() => {
     const handleResize = () => {
@@ -77,9 +89,12 @@ const HomePage = () => {
             <BalanceCard />
           </div>
           <div className="grow">
-            <span className="text-md font-medium text-slate-500 px-4">
-              Transaction History
-            </span>
+            <div className="flex px-4 py-2 flex-row justify-between items-center">
+              <span className="text-md font-medium text-slate-500">
+                Transaction History
+              </span>
+              <MonthSelectBox onChangeMonth={handleOnChangeMonth} selectedMonth={selectedMonth} />
+            </div>
             <TransactionList height={height} />
           </div>
         </div>

@@ -42,7 +42,7 @@ export default function Add() {
 export const TransactionForm = ({className,isDesktop = false}: {className?:string,isDesktop?:boolean}) => {
   const { createTransaction } = useTransaction();
   const { categories, fetchMore, hasMore } = useCategory();
-  const { handleTabChange, currentParam } = useTab();
+  const { handleTabChange, currentTabParam } = useTab();
 
   const [initialValue, setInitialValue] = useState<TransactionType>({
     categoryId: "",
@@ -51,15 +51,15 @@ export const TransactionForm = ({className,isDesktop = false}: {className?:strin
   });
 
   const handleSubmit = async (values: TransactionType, { resetForm }: FormikHelpers<TransactionType>) => {
-    const transactionType = isDesktop ? values.type : currentParam.toLowerCase();
+    const transactionType = isDesktop ? values.type : currentTabParam.toLowerCase();
     await createTransaction({...values,type:transactionType});
     setInitialValue({ categoryId: "", amount: "" ,type:""});
     resetForm();
   };
 
   const getButtonText = () => {
-    if(currentParam && !isDesktop){
-      return currentParam === TransactionTab.EXPENSE
+    if(currentTabParam && !isDesktop){
+      return currentTabParam === TransactionTab.EXPENSE
       ? TransactionTab.EXPENSE
       : TransactionTab.INCOME;
     }else if(isDesktop){
@@ -76,7 +76,7 @@ export const TransactionForm = ({className,isDesktop = false}: {className?:strin
       {!isDesktop && (
          <SegmentedControl
          data={[TransactionTab.INCOME, TransactionTab.EXPENSE]}
-         defaultTab={currentParam !== TransactionTab.ALL ? currentParam : TransactionTab.INCOME}
+         defaultTab={currentTabParam !== TransactionTab.ALL ? currentTabParam : TransactionTab.INCOME}
          onSelectionChange={handleTabChange}
        />
       )}

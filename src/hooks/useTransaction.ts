@@ -12,21 +12,23 @@ import { sanitizeMoney } from "@/utils/frontend/money";
 export const useTransaction = () => {
     const { successToast, errorToast } = useToastHook();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [isFetching, setIsFetching] = useState<boolean>(true);
-    const { currentParam } = useTab();
+    const [isFetching, setIsFetching] = useState<boolean>();
+    const { currentTabParam, currentMonthParam } = useTab();
 
-    const fetchTransactions = useCallback(async () => {
+    const fetchTransactions = useCallback(async (params?: {[key: string]: any}) => {
         setIsFetching(true);
         try {
-            console.log(currentParam)
-            const response = await axiosInstance.get(`/transaction?tab=${currentParam}`);
+            const response = await axiosInstance.get(`/transaction`, {
+                params,
+            });
             setTransactions(response.data.data);
         } catch (error: any) {
+            setTransactions([])
             return errorToast(error.response.data.message || error.response.data.error)
         } finally {
             setIsFetching(false);
         }
-    }, [currentParam, errorToast])
+    }, [errorToast])
 
     const createTransaction = useCallback(async (transaction: TransactionType) => {
         try {
@@ -42,11 +44,11 @@ export const useTransaction = () => {
         } catch (err: any) {
             return errorToast(err.response.data.message || err.response.data.error)
         }
-    }, [errorToast, successToast, currentParam])
+    }, [errorToast, successToast, currentTabParam])
 
     useEffect(() => {
-        fetchTransactions();    
-    }, [currentParam]);
+        fetchTransactions({tab: currentTabParam, month: currentMonthParam}); 
+    }, [currentTabParam, currentMonthParam]);
 
     return {
         transactions,

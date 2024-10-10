@@ -6,7 +6,8 @@ import { createQueryString } from "@/lib/route";
 
 export const useTab = () => {
     const searchParams = useSearchParams();
-    const currentParam = searchParams.get('tab') || TransactionTab.ALL;
+    const currentTabParam = searchParams.get('tab') || TransactionTab.ALL;
+    const currentMonthParam = searchParams.get('month');
     const pathName = usePathname();
     const router = useRouter();
 
@@ -18,5 +19,5 @@ export const useTab = () => {
         router.push(`${pathName}?${createQuery(queryName, item)}`);
     }
 
-    return { currentParam, handleTabChange }
+    return { currentTabParam, currentMonthParam, handleTabChange }
 }
