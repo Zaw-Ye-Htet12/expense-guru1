@@ -12,7 +12,7 @@ import { sanitizeMoney } from "@/utils/frontend/money";
 export const useTransaction = () => {
     const { successToast, errorToast } = useToastHook();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [isFetching, setIsFetching] = useState<boolean>();
+    const [isFetching, setIsFetching] = useState<boolean>(true);
     const { currentTabParam, currentMonthParam } = useTab();
 
     const fetchTransactions = useCallback(async (params?: {[key: string]: any}) => {

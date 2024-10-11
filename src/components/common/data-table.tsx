@@ -24,25 +24,27 @@ import { useEffect, useState } from "react"
 import { Input } from "../ui/input"
 import { Button } from "@/components/ui/button"
 import { DataTablePagination } from "./data-table-pagination"
-import Link from "next/link"
-import CategoryDialogBox from "../mobile/category/categoryDialogBox"
-import { useCategory } from "@/hooks/useCategory"
 import EmptyData from "./emptyData";
 import ListSkeleton from "./listSkeleton";
+import { DatePickerWithRange } from "./datePicker";
 
 
 interface DataTableProps<TData, TValue> {
   columns: any,
   data: TData[],
   isLoading: boolean,
-  filterableColumns:string[]
+  filterableColumns:string[],
+  dateRangeComponent?:React.ReactNode,
+  dataName:string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading,
-  filterableColumns   
+  filterableColumns,
+  dateRangeComponent,
+  dataName
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -63,27 +65,34 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4 gap-1">
-      {filterableColumns.map((columnKey) => (
-          <Input
-            key={columnKey}
-            placeholder={`Filter by ${columnKey==="categoryId" ? 'category' : columnKey}...`}
-            value={(table.getColumn(columnKey)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(columnKey)?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-        ))}
+      <div className="flex items-center justify-between py-4">
+        <div className="flex gap-1">
+          {filterableColumns.map((columnKey) => (
+            <Input
+              key={columnKey}
+              placeholder={`Filter by ${columnKey==="categoryId" ? 'category' : columnKey}...`}
+              value={(table.getColumn(columnKey)?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn(columnKey)?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm"
+            />
+          ))}
+        </div>
+        {dateRangeComponent && (
+          <div>
+            {dateRangeComponent}
+          </div>
+        )}
       </div>
       <div className="rounded-md border">
-        <Table>
-          <TableHeader>
+        <Table >
+          <TableHeader className="h-12">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="h-12 border-b ">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -104,13 +113,14 @@ export function DataTable<TData, TValue>({
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row,index) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 h-11`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="border-b ">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -119,7 +129,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  <EmptyData dataName="categories" />
+                  <EmptyData dataName={dataName} />
                 </TableCell>
               </TableRow>
             )}

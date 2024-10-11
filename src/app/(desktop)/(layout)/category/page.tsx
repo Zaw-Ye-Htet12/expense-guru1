@@ -150,6 +150,7 @@ export default function CategoryPage() {
   const handleCreate = async (category: CategoryType) => {
     await createCategory(category);
     setIsCreateDialogOpen(false);
+    setSelectedCategories([])
   }
 
   return (
@@ -176,7 +177,7 @@ export default function CategoryPage() {
             onDelete={()=>handleDelete(currentEditCategory._id)}
           />
           )}
-          <DataTable key={categories.length} isLoading={isFetching} columns={columns} data={categories} filterableColumns={['name']}/>
+          <DataTable key={categories.length} dataName="categories" isLoading={isFetching} columns={columns} data={categories} filterableColumns={['name']}/>
 
           {isEditDialogOpen && currentEditCategory && (
             <CategoryDialogBox

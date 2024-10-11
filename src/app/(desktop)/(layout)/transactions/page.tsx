@@ -1,16 +1,17 @@
 "use client"
-import { TransactionForm } from "@/app/mobile/(layout)/add/page";
 import { DataTable } from "@/components/common/data-table";
+import { DatePickerWithRange } from "@/components/common/datePicker";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useCategory } from "@/hooks/useCategory";
 import { useTransaction } from "@/hooks/useTransaction";
 import { ColumnDef } from "@tanstack/react-table";
+import { endOfDay } from "date-fns";
 import dayjs from "dayjs";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { DateRange } from "react-day-picker";
 
 export type Transaction = {
     _id: string,
@@ -25,7 +26,17 @@ export type Transaction = {
 export default function TransactionPage() {
     const { transactions, isFetching } = useTransaction();
     const [typeFilter, setTypeFilter] = useState<string>('');
-
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>();
+    
+    const filteredTransactions = transactions.filter((transaction)=>{
+        const matchesType = typeFilter ? transaction.type.toLowerCase() === typeFilter.toLowerCase() : true;
+        const transactionDate = new Date(transaction.createdAt);
+        const matchesDateRange =
+        selectedDateRange?.from && selectedDateRange?.to
+          ? transactionDate >= selectedDateRange.from && transactionDate <= endOfDay(selectedDateRange.to)
+          : true;
+        return matchesType && matchesDateRange
+    })
     const columns: ColumnDef<Transaction>[] = [
         {
             id: "select",
@@ -105,7 +116,7 @@ export default function TransactionPage() {
                     value={typeFilter || 'all'}
                     
                     >
-                    <SelectTrigger className="ml-2 p-1 border rounded w-32">
+                    <SelectTrigger className="ml-2 border rounded w-32">
                         <SelectValue placeholder="All" />
                     </SelectTrigger>
                     <SelectContent>
@@ -141,12 +152,15 @@ export default function TransactionPage() {
                         <Button>Add New Transaction</Button>
                     </Link>
                     <DataTable
-                        data={transactions.filter((transaction) => {
-                        return typeFilter ? transaction.type.toLowerCase() === typeFilter.toLowerCase() : true;
-                        })}
+                        key={transactions.length}
+                        dataName="transactions"
+                        data={filteredTransactions}
                         isLoading={isFetching}
                         columns={columns}
                         filterableColumns={['amount', 'categoryId']}
+                        dateRangeComponent={
+                            <DatePickerWithRange selectedDateRange={selectedDateRange} onDateChange={setSelectedDateRange}/>
+                        }
                     />
                 </div>
             </div>
