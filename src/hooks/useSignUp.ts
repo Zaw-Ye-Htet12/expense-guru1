@@ -5,9 +5,11 @@ import axiosInstance from "@/lib/axios";
 import { HttpStatus } from "@/enums/httpStatus";
 import { getRelevantRoute } from "@/lib/route";
 import { Route } from "@/enums/route";
+import { useToastHook } from "./useToastHook";
 
 export const useSignUp = () => {
   const [loading, setLoading] = useState(false);
+  const { errorToast } = useToastHook();
   const router = useRouter();
   const signup = async (user: Omit<SignUpUserType, "confirmPassword">) => {
     try {
@@ -19,7 +21,7 @@ export const useSignUp = () => {
       }
     } catch (error: any) {
       setLoading(false);
-      console.error(`Error From Sign up : ${error}`);
+      return errorToast(error.response.data.message);
     }
   };
   return { signup, loading };

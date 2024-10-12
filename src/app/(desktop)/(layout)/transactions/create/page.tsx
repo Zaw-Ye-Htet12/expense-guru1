@@ -10,7 +10,7 @@ export default function CreatePage(){
                     <Link href="/transactions" className="text-gray-400">Transactions </Link>
                     <span className="text-primaryLight">/ Create</span>
                 </h1>
-                <TransactionForm  isDesktop={true}/>
+                <TransactionForm/>
             </div>
         </div>
     </div>

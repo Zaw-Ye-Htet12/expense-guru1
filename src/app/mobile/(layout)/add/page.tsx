@@ -23,13 +23,14 @@ import { useState } from "react";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import SegmentedControl from "@/components/ui/segmented-control";
 import { useTab } from "@/hooks/useTab";
+import { isMobile } from "react-device-detect";
 
 export default function Add() {
   return (
     <div className="pt-10 flex flex-col items-center justify-center">
-      <div className="absolute top-0 left-0 h-auto">
+      <div className="absolute top-0 left-0 h-dvh">
         <Image src={Bg} alt="background image" className="w-screen" />
-        <div className="relative bottom-[100px] w-[90%] py-5 px-3 mx-auto shadow-md rounded-3xl bg-white">
+        <div className="relative bottom-[150px] w-[90%] py-5 px-3 mx-auto shadow-md rounded-3xl bg-white">
           <WithSuspense>
             <TransactionForm />
           </WithSuspense>
@@ -39,7 +40,13 @@ export default function Add() {
   );
 }
 
-export const TransactionForm = ({className,isDesktop = false}: {className?:string,isDesktop?:boolean}) => {
+export const TransactionForm = ({
+  className,
+  isDesktop = !isMobile,
+}: {
+  className?: string;
+  isDesktop?: boolean;
+}) => {
   const { createTransaction } = useTransaction();
   const { categories, fetchMore, hasMore } = useCategory();
   const { handleTabChange, currentTabParam } = useTab();
@@ -47,23 +54,38 @@ export const TransactionForm = ({className,isDesktop = false}: {className?:strin
   const [initialValue, setInitialValue] = useState<TransactionType>({
     categoryId: "",
     amount: "",
-    type:""
+    type: "",
+    note: undefined,
   });
 
-  const handleSubmit = async (values: TransactionType, { resetForm }: FormikHelpers<TransactionType>) => {
-    const transactionType = isDesktop ? values.type : currentTabParam.toLowerCase();
-    await createTransaction({...values,type:transactionType});
-    setInitialValue({ categoryId: "", amount: "" ,type:""});
+  const handleSubmit = async (
+    values: TransactionType,
+    { resetForm }: FormikHelpers<TransactionType>
+  ) => {
+    const transactionType = isDesktop
+      ? values.type
+      : currentTabParam.toLowerCase();
+    await createTransaction({ ...values, type: transactionType });
+    let initial_value: TransactionType = {
+      categoryId: "",
+      amount: "",
+      type: "",
+      note: undefined,
+    };
+    if (values.note) {
+      initial_value = { ...initial_value, note: "" };
+    }
+    setInitialValue(initial_value);
     resetForm();
   };
 
   const getButtonText = () => {
-    if(currentTabParam && !isDesktop){
+    if (currentTabParam && !isDesktop) {
       return currentTabParam === TransactionTab.EXPENSE
-      ? TransactionTab.EXPENSE
-      : TransactionTab.INCOME;
-    }else if(isDesktop){
-      return "New Transaction"
+        ? TransactionTab.EXPENSE
+        : TransactionTab.INCOME;
+    } else if (isDesktop) {
+      return "New Transaction";
     }
   };
 
@@ -74,11 +96,15 @@ export const TransactionForm = ({className,isDesktop = false}: {className?:strin
   return (
     <>
       {!isDesktop && (
-         <SegmentedControl
-         data={[TransactionTab.INCOME, TransactionTab.EXPENSE]}
-         defaultTab={currentTabParam !== TransactionTab.ALL ? currentTabParam : TransactionTab.INCOME}
-         onSelectionChange={handleTabChange}
-       />
+        <SegmentedControl
+          data={[TransactionTab.INCOME, TransactionTab.EXPENSE]}
+          defaultTab={
+            currentTabParam !== TransactionTab.ALL
+              ? currentTabParam
+              : TransactionTab.INCOME
+          }
+          onSelectionChange={handleTabChange}
+        />
       )}
       <Formik
         initialValues={initialValue}
@@ -89,20 +115,19 @@ export const TransactionForm = ({className,isDesktop = false}: {className?:strin
         <Form>
           <div className="px-4 mt-4 w-full flex flex-col gap-3">
             <span className="flex justify-between items-center">
-              <Label htmlFor="category">
+              <Label htmlFor="categoryId">
                 <span>Category</span>
               </Label>
-             {!isDesktop && (
-               <Link
+              {!isDesktop && (
+                <Link
                   href={getMobileRoute(Route.CATEGORY)}
                   className="p-1 rounded-full bg-[#2f7e79] w-[23px]"
                 >
                   <Image src={AddIcon} alt="add icon" />
                 </Link>
-             )}
-             
+              )}
             </span>
-            
+
             <FormField
               as={SelectBox}
               name="categoryId"
@@ -114,7 +139,7 @@ export const TransactionForm = ({className,isDesktop = false}: {className?:strin
             />
           </div>
           <div className="px-4 mt-4 w-full flex flex-col gap-3">
-            <Label htmlFor="categoryId">
+            <Label htmlFor="amount">
               <span>Amount</span>
             </Label>
             <FormField
@@ -126,12 +151,24 @@ export const TransactionForm = ({className,isDesktop = false}: {className?:strin
               defaultValue={1000}
             />
           </div>
+          <div className="px-4 mt-4 w-full flex flex-col gap-3">
+            <Label htmlFor="note">
+              <span>Note</span> (Optional)
+            </Label>
+            <FormField
+              as={Input}
+              name="note"
+              type="text"
+              id="note"
+              placeholder="Enter a note (optional)"
+            />
+          </div>
           {isDesktop && (
             <div className="px-4 mt-4 w-full flex flex-col gap-3">
-            <Label htmlFor="Type">
-              <span>Transaction Type</span>
-            </Label>
-            <FormField 
+              <Label htmlFor="Type">
+                <span>Transaction Type</span>
+              </Label>
+              <FormField
                 as={SelectBox}
                 name="type"
                 id="type"
@@ -139,9 +176,13 @@ export const TransactionForm = ({className,isDesktop = false}: {className?:strin
                 optionValue="value"
                 optionName="label"
               />
-          </div>
-            )}
-          <div className={`px-4 mt-4 flex flex-col gap-3 ${isDesktop ? 'w-[20%]' : 'w-full' }`}>
+            </div>
+          )}
+          <div
+            className={`px-4 mt-4 flex flex-col gap-3 ${
+              isDesktop ? "w-[20%]" : "w-full"
+            }`}
+          >
             <Button type="submit">Add {getButtonText()}</Button>
           </div>
         </Form>

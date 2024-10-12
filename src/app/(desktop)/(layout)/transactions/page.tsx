@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useTransaction } from "@/hooks/useTransaction";
 import { ColumnDef } from "@tanstack/react-table";
 import { endOfDay } from "date-fns";
+import { TransactionForm } from "@/app/mobile/(layout)/add/page";
+import TransactionDialogBox from "@/components/desktop/transactions/transactionDialogBox";
 import dayjs from "dayjs";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
@@ -37,6 +39,10 @@ export default function TransactionPage() {
           : true;
         return matchesType && matchesDateRange
     })
+
+    const [currentTransaction, setCurrentTransaction] = useState<Transaction | null>();
+    const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState<boolean>(false);
+
     const columns: ColumnDef<Transaction>[] = [
         {
             id: "select",
@@ -140,14 +146,29 @@ export default function TransactionPage() {
             cell: ({ row }) => {
                 return <span>{dayjs(row.original.createdAt).format("MMMM D, YYYY")}</span>
             }
+        },
+        {
+            id: "Action",
+            header: "Action",
+            cell: ({ row }) => {
+                return <Button onClick={()=>openTransactionDialog(row.original)}>View</Button>
+            }
         }
     ]
 
+    const openTransactionDialog = (transaction:Transaction) => {
+        setCurrentTransaction(transaction);
+        setIsTransactionDialogOpen(true);
+    }
+    const transactionParams = { id: currentTransaction?._id || "" };
     return (
         <div className="h-full -z-10">
             <div className="w-full h-32 relative">
                 <div className="z-50 absolute p-5 w-full">
                     <h1 className="text-2xl font-semibold mb-5">Transactions</h1>
+                    {isTransactionDialogOpen && currentTransaction && (
+                        <TransactionDialogBox isOpen={isTransactionDialogOpen} setIsOpen={setIsTransactionDialogOpen} params={transactionParams}/>
+                    )}
                     <Link href="/transactions/create">
                         <Button>Add New Transaction</Button>
                     </Link>
