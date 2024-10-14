@@ -8,6 +8,7 @@ import Image from "next/image";
 import { TotalIncome } from "@/components/common/totalIncome";
 import TotalExpense from "@/components/common/totalExpense";
 import { useWallet } from "@/hooks/useWallet";
+import { PieChartDonut } from "@/components/desktop/piechart";
 
 const Page = () => {
   const { authUser } = useLogin();
@@ -61,8 +62,14 @@ const Page = () => {
             ))}
           </div>
         </div>
+        
       </div>
+
+        <div className="mt-32 mx-5 mb-5">
+          <PieChartDonut />
+        </div>
       </div>
+
     </>
   );
 };
