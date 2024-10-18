@@ -23,7 +23,7 @@ type MonthlyData = {
 const Page = () => {
   const { authUser } = useLogin();
   const { totalBalance } = useWallet();
-  const {transactions} = useTransaction();
+  const {transactions,isFetching} = useTransaction();
 
   const currentDate = new Date();
 const currentMonth = currentDate.getMonth();
@@ -116,7 +116,7 @@ transactions.forEach((transaction) => {
 
         <div className="mt-32 mx-5 mb-5 flex justify-between gap-6">
           <PieChartDonut />
-          <BarChartComponent chartData={chartData}/>
+          <BarChartComponent chartData={chartData} isFetching={isFetching}/>
         </div>
       </div>
 

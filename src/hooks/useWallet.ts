@@ -5,6 +5,8 @@ import axiosInstance from "@/lib/axios";
 export const useWallet=()=>{
     const {errorToast} = useToastHook();
     const [totalBalance,setTotalBalance] = useState(0);
+    const [isFetching, setIsFetching] = useState<boolean>(true);
+
     const getBalance = async()=>{
         try{
             const response = await axiosInstance.get("/wallet/balance");
@@ -14,9 +16,12 @@ export const useWallet=()=>{
                 error.response.message || error.response.data.error
             )
         }
+        finally{
+            setIsFetching(false)
+        }
     }
     useEffect(()=>{
         getBalance();
     },[])
-    return {totalBalance};
+    return {totalBalance,isFetching};
 }

@@ -1,13 +1,22 @@
 import { useTotalExpense } from "@/hooks/useTotalExpense";
 import React from "react";
 import CountUp from "react-countup";
+import { Skeleton } from "../ui/skeleton";
 
 const TotalExpense = ({ className }: { className?: string }) => {
-  const { totalExpense } = useTotalExpense();
+  const { totalExpense, isFetching } = useTotalExpense();
   return (
-    <h2>
-      <CountUp end={totalExpense} className={className} />
-    </h2>
+    <div>
+      {isFetching ? (<h2>
+        <Skeleton className="w-60 h-[48px] mb-3 bg-slate-200" />
+      </h2>
+      ) : (
+        <h2 className={`font-bold text-3xl ${className}`}>
+          <CountUp end={totalExpense} className={className} /> MMK
+        </h2>
+      )}
+
+    </div>
   );
 };
 

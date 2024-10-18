@@ -5,6 +5,7 @@ import axiosInstance from "@/lib/axios";
 export const useTotalExpense = () => {
     const { errorToast } = useToastHook();
     const [totalExpense, setTotalExpense] = useState(0);
+    const [isFetching,setIsFetching] = useState(true)
     const fetchTotalExpense = useCallback(async () => {
         try {
             const response = await axiosInstance.get("/transaction/total/expense");
@@ -13,10 +14,12 @@ export const useTotalExpense = () => {
             return errorToast(
                 error.response.message || error.response.data.error
             )
+        }finally{
+            setIsFetching(false)
         }
     }, [errorToast])
     useEffect(() => {
         fetchTotalExpense();
     }, [])
-    return { totalExpense };
+    return { totalExpense,isFetching };
 }

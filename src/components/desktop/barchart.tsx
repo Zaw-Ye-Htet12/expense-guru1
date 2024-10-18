@@ -11,6 +11,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Card, CardContent } from "../ui/card"
+import { BarChartSkeleton } from "./barChartSkeleton"
 
 
 
@@ -31,11 +32,13 @@ type MonthlyData = {
     income: number;
   };
 
-export function BarChartComponent({chartData} : {chartData:MonthlyData[]}) {
+export function BarChartComponent({chartData,isFetching} : {chartData:MonthlyData[],isFetching:boolean}) {
     return (
-        <Card className="flex flex-col w-[60%]">
+        <>
+            <Card className="flex flex-col w-[60%]">
             <CardContent className="flex-1 pb-0">
-                <ChartContainer config={chartConfig} className="min-h-[250px]">
+                {isFetching ? (<BarChartSkeleton />) : 
+                (<ChartContainer config={chartConfig} className="min-h-[250px]">
                     <BarChart accessibilityLayer data={chartData}>
                         <CartesianGrid vertical={false} />
                         <XAxis
@@ -50,8 +53,10 @@ export function BarChartComponent({chartData} : {chartData:MonthlyData[]}) {
                         <Bar dataKey="expense" fill="var(--color-expense)" radius={4} />
                         <Bar dataKey="income" fill="var(--color-income)" radius={4} />
                     </BarChart>
-                </ChartContainer>
+                </ChartContainer>)}
+                
             </CardContent>
         </Card>
+        </>
     )
 }
