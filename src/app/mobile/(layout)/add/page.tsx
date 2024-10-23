@@ -179,9 +179,8 @@ export const TransactionForm = ({
             </div>
           )}
           <div
-            className={`px-4 mt-4 flex flex-col gap-3 ${
-              isDesktop ? "w-[20%]" : "w-full"
-            }`}
+            className={`px-4 mt-4 flex flex-col gap-3 ${isDesktop ? "w-[20%]" : "w-full"
+              }`}
           >
             <Button type="submit">Add {getButtonText()}</Button>
           </div>

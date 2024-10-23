@@ -7,9 +7,12 @@ import Image from "next/image";
 import Link from "next/link";
 import Bg from "../../../../../public/home-bg.png"
 import { useLogout } from "@/hooks/useLogout";
+import { useLogin } from "@/hooks/useLogin";
+import { EditIcon } from "lucide-react";
 
 export default function ProfilePage(){
     const { logout } = useLogout();
+    const {authUser} =  useLogin();
     const handleLogout = async() => {
         await logout();
     }
@@ -20,6 +23,11 @@ export default function ProfilePage(){
             <div className="relative bottom-[80px]">
               <ProfileHeader />
               <div className="flex flex-col gap-10 pt-10">
+                <Link href={`${getRelevantRoute(Route.PROFILE)}/${authUser.id}`}
+                  className="flex flex-row w-full px-6 items-center">
+                  <EditIcon width={30} height={20}/>
+                  <div className="ms-4">Edit Profile</div>
+                </Link>
                 <Link
                   href={getRelevantRoute(Route.CATEGORY)}
                   className="flex flex-row w-full px-6 items-center"

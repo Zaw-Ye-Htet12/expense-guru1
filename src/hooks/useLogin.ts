@@ -8,25 +8,30 @@ import { Route } from "@/enums/route";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/components/context/AuthContext";
 import { Sign } from "crypto";
+import { EditUser, User } from "@/types/user";
+import { useLogout } from "./useLogout";
 
-export interface User {
-  username: string;
-  email: string;
-}
+// export interface User {
+//   id: string,
+//   username: string;
+//   email: string;
+// }
 
 export function useLogin() {
-  const { errorToast } = useToastHook();
+  const { errorToast,successToast } = useToastHook();
   const [loading, setLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const router = useRouter();
   const { authUser, setAuthUser } = useContext(AuthContext);
+  const { logout } = useLogout();
 
   const setLoggedInUserData = async () => {
     try {
       const {
-        data: { data },
+        data: { data }
       } = await axiosInstance.get("/users/auth/me");
       const userData = {
+        id: data.id,
         username: data.username,
         email: data.email,
       };
@@ -53,8 +58,8 @@ export function useLogin() {
       return null;
     }
   };
-  
-  const removeLoggedInUserData = ()=>{
+
+  const removeLoggedInUserData = () => {
     setIsLoggedIn(false);
     localStorage.removeItem("userData");
   }
@@ -74,6 +79,40 @@ export function useLogin() {
       );
     }
   };
+
+  const update = async (user: Omit<EditUser, "confirmPassword">) => {
+    try {
+      const { status,data } = await axiosInstance.put("/users/edit", user);
+      if (status === HttpStatus.CREATED) {
+        if (data.passwordChanged) {
+          await logout();
+        } else {
+          const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+          userData.username = user.username;
+          userData.email = user.email;
+          localStorage.setItem("userData", JSON.stringify(userData));
+          setAuthUser(userData);
+          setIsLoggedIn(true)
+          successToast("Profile updated successfully");
+        }
+      }
+    } catch (error: any) {
+      return errorToast(
+        error.response.data.message || error.response.data.error
+      );
+    }
+  }
+
+  const checkPassword = async (password: string, id: string) => {
+    try {
+      const {data} =await axiosInstance.post('/users/checkPassword', { password, id });
+      return data.success;
+    } catch (error: any) {
+      return errorToast(
+        error.response.data.message || error.response.data.error
+      );
+    }
+  };
   useEffect(() => {
     if (isLoggedIn) {
       router.push(getRelevantRoute(Route.HOME));
@@ -83,6 +122,8 @@ export function useLogin() {
 
   return {
     login,
+    update,
+    checkPassword,
     getLoggedInUserData,
     removeLoggedInUserData,
     setLoggedInUserData,

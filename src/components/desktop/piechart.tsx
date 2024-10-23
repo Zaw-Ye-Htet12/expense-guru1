@@ -48,7 +48,7 @@ export function PieChartDonut() {
   const chartConfig = {
 
   } satisfies ChartConfig
-
+  console.log(chartData);
   return (
     <Card className="flex flex-col w-[40%]">
       <CardHeader className="items-center pb-0">
@@ -56,6 +56,8 @@ export function PieChartDonut() {
         <CardDescription>Category usage based on transaction counts</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
+        {chartData.length !== 0 || isFetching ? 
+        <>
         {isFetching ? (
           <div className="flex justify-center items-center h-full">
             <Skeleton className="bg-slate-200 rounded-full w-[200px] h-[200px] mb-12 mt-5" />
@@ -113,6 +115,11 @@ export function PieChartDonut() {
             </PieChart>
           </ChartContainer>
         )}
+        </>
+        : (<div className="flex justify-center items-center h-full text-primary text-xl">
+          No Category Used yet
+        </div>)}
+        
 
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">

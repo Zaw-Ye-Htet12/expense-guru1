@@ -10,13 +10,14 @@ import { Route } from "@/enums/route";
 export const useLogout =()=>{
     const {errorToast} =  useToastHook();
     const router = useRouter();
-    const {removeLoggedInUserData} = useLogin();
+    // const {removeLoggedInUserData} = useLogin();
 
     const logout =async()=>{
         try{
             const {status} = await axiosInstance.get("/users/logout");
             if(status === HttpStatus.CREATED){
-                removeLoggedInUserData();
+                // removeLoggedInUserData();
+                localStorage.removeItem("userData")
                 router.push(getRelevantRoute(Route.LOGIN))
             }
         }catch(error:any){

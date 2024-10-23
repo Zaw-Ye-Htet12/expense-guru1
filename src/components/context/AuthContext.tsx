@@ -9,6 +9,6 @@ interface AuthContext {
 
 export const AuthContext = createContext<AuthContext>({
   isLoggedIn: false,
-  authUser: { email: "", username: "" },
+  authUser: {id:"", email: "", username: "" },
   setAuthUser: () => {},
 });

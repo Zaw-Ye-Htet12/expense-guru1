@@ -5,7 +5,7 @@ import { useLogin, User } from "@/hooks/useLogin";
 import { useEffect } from "react";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [authUser, setAuthUser] = useState<User>({username: "", email: ""});
+  const [authUser, setAuthUser] = useState<User>({id:"",username: "", email: ""});
   const { getLoggedInUserData, isLoggedIn } = useLogin();
   const memoValue = useMemo(
     () => ({
