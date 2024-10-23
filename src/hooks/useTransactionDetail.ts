@@ -1,6 +1,7 @@
 import axiosInstance from "@/lib/axios";
 import { useToastHook } from "./useToastHook"
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { HttpStatus } from "@/enums/httpStatus";
 
 interface Category {
     name: string
@@ -42,8 +43,27 @@ export const useTransactionDetail = () => {
             setIsFetching(false);
         }
     }, [errorToast])
+
+    const updateTransaction = useCallback(async (transaction: { note: string, id: string }) => {
+        try {
+            const response = await axiosInstance.put('/transaction/change-note', transaction)
+            const updatedTransaction = response.data.data;
+
+            if (response.data.status === HttpStatus.OK) {
+                setTransaction((prevTransaction) => ({
+                    ...prevTransaction,
+                    note: updatedTransaction.note,
+                }));
+                return successToast(response.data.message);
+            }
+        } catch (err: any) {
+            return errorToast(err.response?.data?.message || err.response?.data.error?.error?.note || "Something went wrong")
+        }
+    }, [errorToast, successToast, fetchTransactionDetail])
+
     return {
         fetchTransactionDetail,
+        updateTransaction,
         transaction,
         isFetching
     }

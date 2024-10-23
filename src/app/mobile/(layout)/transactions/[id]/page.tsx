@@ -23,17 +23,16 @@ const TransactionDetail = ({
   isDesktop?: boolean;
   onClose: () => void;
 }) => {
-  const { fetchTransactionDetail, transaction, isFetching } =
+  const { fetchTransactionDetail, transaction, isFetching, updateTransaction } =
     useTransactionDetail();
   const [showFullText, setshowFullText] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [noteInput, setNoteInput] = useState<string>(transaction?.note || "");
+  const [isSaving, setIsSaving] = useState(false);
 
   const toggleShowFullText = () => {
     setshowFullText((prev) => !prev);
   };
-
-  useEffect(() => {
-    fetchTransactionDetail(id);
-  }, [id]);
 
   const getTransactionType = (type: string) => {
     return type === TransactionTab.INCOME.toString().toLowerCase()
@@ -44,6 +43,26 @@ const TransactionDetail = ({
   const handleClose = () => {
     onClose();
   };
+
+  const handleEditTransaction = () => {
+    setEditMode(true);
+    setNoteInput(transaction?.note || "");
+  };
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNoteInput(e.target.value);
+  };
+
+  const handleSaveTransaction = async (note: string, id: string) => {
+    setIsSaving(true);
+    await updateTransaction({ note, id });
+    setIsSaving(false);
+    setEditMode(false);
+  };
+
+  useEffect(() => {
+    fetchTransactionDetail(id);
+  }, [id]);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -123,37 +142,38 @@ const TransactionDetail = ({
                       <div>Date</div>
                       <div>{formatDate(transaction.createdAt)}</div>
                     </div>
-                    {transaction.note && !isDesktop && (
-                      <div className="flex flex-row justify-between items-start py-3">
+                    {editMode || transaction.note ? (
+                      <div className="flex flex-col gap-1 items-start py-3 overflow-x-hidden">
                         <div>Note</div>
-                        <div className="flex flex-col text-right">
-                          <p
-                            className={`${
-                              showFullText ? "whitespace-normal" : "truncate"
-                            } text-[14px] w-[140px]`}
-                            style={{ wordWrap: "break-word" }}
-                          >
-                            {transaction.note}
-                          </p>
-                          {transaction.note.length > 20 && (
+                        {editMode ? (
+                          <textarea
+                            className="text-sm text-gray-400 w-full p-2 border rounded"
+                            value={noteInput}
+                            onChange={handleNoteChange}
+                          />
+                        ) : (
+                          <div className="text-sm text-gray-400">
                             <p
-                              onClick={toggleShowFullText}
-                              className="text-[#59BFBF] text-[11px] cursor-pointer"
+                              className={`${
+                                showFullText ? "whitespace-normal" : "truncate"
+                              } text-[14px]`}
+                              style={{ wordWrap: "break-word" }}
                             >
-                              {showFullText ? "Show less" : "Show more"}
+                              {transaction.note}
                             </p>
-                          )}
-                        </div>
+                            {transaction.note &&
+                              transaction.note.length > 20 && (
+                                <p
+                                  onClick={toggleShowFullText}
+                                  className="text-[#59BFBF] text-[11px] cursor-pointer"
+                                >
+                                  {showFullText ? "Show less" : "Show more"}
+                                </p>
+                              )}
+                          </div>
+                        )}
                       </div>
-                    )}
-                    {transaction.note && isDesktop && (
-                      <div className="flex flex-col gap-1 items-start py-3">
-                        <div>Note</div>
-                        <div className="text-sm text-gray-400">
-                          {transaction.note}
-                        </div>
-                      </div>
-                    )}
+                    ) : null}
                   </div>
                   <div className="px-4">
                     <hr />
@@ -162,7 +182,11 @@ const TransactionDetail = ({
                       <div>{transaction.amount}</div>
                     </div>
                   </div>
-                  <div className="flex justify-center">
+                  <div
+                    className={`${
+                      isDesktop ? "flex-row" : "flex-col px-4 pt-3"
+                    } flex gap-3 justify-center`}
+                  >
                     {!isDesktop ? (
                       <Button>
                         <Link href={getRelevantRoute(Route.HOME)}>
@@ -172,6 +196,24 @@ const TransactionDetail = ({
                     ) : (
                       <Button onClick={() => handleClose()}>Close</Button>
                     )}
+                    <Button
+                      variant="outline"
+                      onClick={
+                        editMode
+                          ? () =>
+                              handleSaveTransaction(noteInput, transaction._id)
+                          : handleEditTransaction
+                      }
+                      disabled={isSaving}
+                    >
+                      {isSaving
+                        ? "Saving..."
+                        : editMode
+                        ? "Save"
+                        : transaction.note
+                        ? "Edit Note"
+                        : "Add Note"}
+                    </Button>
                   </div>
                 </div>
               )}
