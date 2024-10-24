@@ -1,5 +1,6 @@
 import { HttpStatus } from "@/enums/httpStatus";
 import axiosInstance from "@/lib/axios";
+import useAxiosPrivate from "./useAxiosPrivate";
 import { SignInType } from "@/validations/sign-in";
 import { useContext, useEffect, useState } from "react";
 import { useToastHook } from "./useToastHook";
@@ -15,17 +16,18 @@ export interface User {
 }
 
 export function useLogin() {
+  const  axiosPrivateInstance  = useAxiosPrivate();
   const { errorToast } = useToastHook();
   const [loading, setLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const router = useRouter();
-  const { authUser, setAuthUser } = useContext(AuthContext);
+  const { authUser, setAuthUser, setAccessToken } = useContext(AuthContext);
 
   const setLoggedInUserData = async () => {
     try {
       const {
         data: { data },
-      } = await axiosInstance.get("/users/auth/me");
+      } = await axiosPrivateInstance.get("/auth/me");
       const userData = {
         username: data.username,
         email: data.email,
@@ -62,8 +64,12 @@ export function useLogin() {
   const login = async (user: SignInType) => {
     try {
       setLoading(true);
-      const { status } = await axiosInstance.post("/users/login", user);
+      const { status, data } = await axiosInstance.post("/users/login", user, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true
+      });
       if (status === HttpStatus.CREATED) {
+        setAccessToken(data.accessToken);
         await setLoggedInUserData();
         setIsLoggedIn(true);
       }

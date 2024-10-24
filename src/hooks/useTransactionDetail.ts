@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import useAxiosPrivate from "./useAxiosPrivate";
 import { useToastHook } from "./useToastHook"
 import { useCallback, useEffect, useState } from "react";
 import { HttpStatus } from "@/enums/httpStatus";
@@ -18,6 +18,7 @@ interface Transaction {
 }
 
 export const useTransactionDetail = () => {
+    const axiosPrivateInstance = useAxiosPrivate();
     const { successToast, errorToast } = useToastHook();
     const [transaction, setTransaction] = useState<Transaction>(
         {
@@ -35,7 +36,7 @@ export const useTransactionDetail = () => {
     const [isFetching, setIsFetching] = useState(true);
     const fetchTransactionDetail = useCallback(async (id: string) => {
         try {
-            const response = await axiosInstance.get(`/transaction/${id}`)
+            const response = await axiosPrivateInstance.get(`/transaction/${id}`)
             setTransaction(response.data.data)
         } catch (err: any) {
             return errorToast(err.response.data.message || err.response.data.error)
@@ -46,7 +47,7 @@ export const useTransactionDetail = () => {
 
     const updateTransaction = useCallback(async (transaction: { note: string, id: string }) => {
         try {
-            const response = await axiosInstance.put('/transaction/change-note', transaction)
+            const response = await axiosPrivateInstance.put('/transaction/change-note', transaction)
             const updatedTransaction = response.data.data;
 
             if (response.data.status === HttpStatus.OK) {

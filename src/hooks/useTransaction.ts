@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useToastHook } from "./useToastHook";
-import axiosInstance from "@/lib/axios";
+import useAxiosPrivate from "./useAxiosPrivate";
 import { Transaction } from "@/types/transaction";
 import { TransactionType } from "@/validations/transaction/create";
 import { useSearchParams } from "next/navigation";
@@ -10,6 +10,7 @@ import { useTab } from "./useTab";
 import { sanitizeMoney } from "@/utils/frontend/money";
 
 export const useTransaction = () => {
+    const axiosPrivateInstance = useAxiosPrivate();
     const { successToast, errorToast } = useToastHook();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isFetching, setIsFetching] = useState<boolean>(true);
@@ -18,7 +19,7 @@ export const useTransaction = () => {
     const fetchTransactions = useCallback(async (params?: {[key: string]: any}) => {
         setIsFetching(true);
         try {
-            const response = await axiosInstance.get(`/transaction`, {
+            const response = await axiosPrivateInstance.get(`/transaction`, {
                 params,
             });
             setTransactions(response.data.data);
@@ -38,7 +39,7 @@ export const useTransaction = () => {
                 type: transaction.type,
                 note: transaction.note,
             };
-            const response = await axiosInstance.post("/transaction/create", body)
+            const response = await axiosPrivateInstance.post("/transaction/create", body)
             if (response.data.status === HttpStatus.CREATED) {
                 return successToast(response.data.message);
             }
