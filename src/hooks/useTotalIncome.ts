@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useToastHook } from "./useToastHook";
-import axiosInstance from "@/lib/axios";
+import useAxiosPrivate from "./useAxiosPrivate";
 
 export const useTotalIncome = () => {
+    const axiosPrivateInstance = useAxiosPrivate();
     const { errorToast } = useToastHook();
     const [totalIncome, setTotalIncome] = useState(0);
     const [isFetching,setIsFetching] = useState(true)
     const fetchTotalIncome = useCallback(async () => {
         try {
-            const response = await axiosInstance.get("/transaction/total/income");
+            const response = await axiosPrivateInstance.get("/transaction/total/income");
             setTotalIncome(response.data.data.income)
         } catch (error: any) {
             return errorToast(

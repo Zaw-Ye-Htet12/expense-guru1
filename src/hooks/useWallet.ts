@@ -1,15 +1,16 @@
 import { useState,useEffect } from "react";
 import { useToastHook } from "./useToastHook";
-import axiosInstance from "@/lib/axios";
+import useAxiosPrivate from "./useAxiosPrivate";
 
-export const useWallet=()=>{
+export const useWallet = () => {
+    const axiosPrivateInstance = useAxiosPrivate();
     const {errorToast} = useToastHook();
     const [totalBalance,setTotalBalance] = useState(0);
     const [isFetching, setIsFetching] = useState<boolean>(true);
 
     const getBalance = async()=>{
         try{
-            const response = await axiosInstance.get("/wallet/balance");
+            const response = await axiosPrivateInstance.get("/wallet/balance");
             setTotalBalance(response.data.data.totalBalance)
         }catch(error:any){
             return errorToast(

@@ -1,11 +1,12 @@
 import { Categories } from "@/types/category";
 import { CategoryType } from "@/validations/category/create";
-import axiosInstance from "@/lib/axios";
+import useAxiosPrivate from "./useAxiosPrivate";
 import { useEffect, useState, useCallback } from "react";
 import { HttpStatus } from "@/enums/httpStatus";
 import { useToastHook } from "./useToastHook";
 
 export const useCategory = () => {
+  const axiosPrivateInstance = useAxiosPrivate();
   const { successToast, errorToast } = useToastHook();
   const [categories, setCategories] = useState<Categories[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -16,7 +17,7 @@ export const useCategory = () => {
   const fetchCategories = useCallback(
     async () => {
       try {
-        const response = await axiosInstance.get(`/category`);
+        const response = await axiosPrivateInstance.get(`/category`);
         const data = response.data.data;
         setCategories(data);
       } catch (error: any) {
@@ -41,7 +42,7 @@ export const useCategory = () => {
     async (category: CategoryType) => {
       try {
         setLoading(true);
-        const response = await axiosInstance.post("/category/create", category);
+        const response = await axiosPrivateInstance.post("/category/create", category);
         const newCategory = response.data.data;
 
         if (response.data.status === HttpStatus.CREATED) {
@@ -65,7 +66,7 @@ export const useCategory = () => {
         setLoading(true);
     
         const { name, _id: id } = category;
-        const response = await axiosInstance.put(`/category/${id}`, { name });
+        const response = await axiosPrivateInstance.put(`/category/${id}`, { name });
         const updatedCategory = response.data.data;
 
         if (response.data.status === HttpStatus.CREATED) {
@@ -89,7 +90,7 @@ export const useCategory = () => {
 
   const deleteCategory=async(id:string)=>{
       try{
-        const response = await axiosInstance.delete(`/category/${id}`);
+        const response = await axiosPrivateInstance.delete(`/category/${id}`);
         if (response.data.status === HttpStatus.CREATED) {
           setCategories((prevCategories) => {
           const filteredCategories = prevCategories.filter(

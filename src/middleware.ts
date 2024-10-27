@@ -29,7 +29,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   const isMobileDevice = isMobile(userAgent);
-  const token = req.cookies.get("authToken")?.value ?? "";
+  const token = req.cookies.get("refreshToken")?.value ?? "";
   const isPubliPath = publicPaths.includes(pathname);
 
   if (!isAPIRoute(pathname) && !pathname.includes("auth")) {

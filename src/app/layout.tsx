@@ -35,7 +35,7 @@ export default function RootLayout({
       >
         <NextTopLoader
           color="#59bfbf"
-          speed={300}
+          speed={100}
           showSpinner={false}
         ></NextTopLoader>
         <AuthProvider>{children}</AuthProvider>

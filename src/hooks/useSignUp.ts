@@ -14,7 +14,10 @@ export const useSignUp = () => {
   const signup = async (user: Omit<SignUpUserType, "confirmPassword">) => {
     try {
       setLoading(true);
-      const { status } = await axiosInstance.post("/users/register", user);
+      const { status } = await axiosInstance.post("/users/register", user, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true
+      });
       if (status === HttpStatus.CREATED) {
         setLoading(false);
         router.push(getRelevantRoute(Route.LOGIN));

@@ -5,15 +5,23 @@ import { useLogin, User } from "@/hooks/useLogin";
 import { useEffect } from "react";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [authUser, setAuthUser] = useState<User>({id:"",username: "", email: ""});
+  const [authUser, setAuthUser] = useState<User>({ username: "", email: "" });
+  const [accessToken, setAccessTokenState] = useState<string | null>(null);
   const { getLoggedInUserData, isLoggedIn } = useLogin();
+
+  const setAccessToken = (token: string | null) => {
+    setAccessTokenState(token);
+  }
+  
   const memoValue = useMemo(
     () => ({
       isLoggedIn,
       authUser,
       setAuthUser,
+      accessToken,
+      setAccessToken
     }),
-    [isLoggedIn, authUser]
+    [isLoggedIn, authUser, accessToken]
   );
 
   useEffect(() => {
