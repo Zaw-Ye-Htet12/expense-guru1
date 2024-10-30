@@ -109,7 +109,7 @@ export function useLogin() {
     }
   }
 
-  const checkPassword = async (password: string, id: string) => {
+  const checkPassword = async (password: string, id: string | undefined) => {
     try {
       const {data} =await axiosInstance.post('/users/checkPassword', { password, id });
       return data.success;

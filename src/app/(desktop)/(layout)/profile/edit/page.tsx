@@ -15,12 +15,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
-export default function ProfileEditPage({ params }: { params: { id: string } }) {
+export default function ProfileEditPage() {
     const { authUser,update,checkPassword } = useLogin();
     const [passwordError, setPasswordError] = useState<string | null>(null);
     const [isChangePassword, setIsChangePassword] = useState<boolean>(false)
     const [initialValue, setInitialValue] = useState({
-        id:params.id,
+        id:authUser.id,
         username: authUser.username,
         email: authUser.email,
         currentPassword: "",
@@ -29,7 +29,7 @@ export default function ProfileEditPage({ params }: { params: { id: string } }) 
     })
     const handleSubmit = async (user: any) => {
         if (isChangePassword) {
-            const isPasswordCorrect = await checkPassword(user.currentPassword, params.id);
+            const isPasswordCorrect = await checkPassword(user.currentPassword, authUser.id);
             if (!isPasswordCorrect) {
                 setPasswordError("Incorrect password. Please try again.");
                 return; 
@@ -37,7 +37,7 @@ export default function ProfileEditPage({ params }: { params: { id: string } }) 
             setPasswordError(null); 
         }
         await update({
-            id:params.id,
+            id:authUser.id,
             username: user.username,
             email: user.email,
             password: isChangePassword ? user.newPassword : ""
@@ -77,6 +77,7 @@ export default function ProfileEditPage({ params }: { params: { id: string } }) 
                                     name="email"
                                     type="email"
                                     id="email"
+                                    disabled
                                     defaultValue={initialValue.email}
                                 />
                             </div>
@@ -97,7 +98,7 @@ export default function ProfileEditPage({ params }: { params: { id: string } }) 
                                             type="text"
                                             id="currentPassword"
                                         />
-                                        {passwordError && <div className="text-red-500">{passwordError}</div>}
+                                        {passwordError && <div className="text-red-500 text-sm">{passwordError}</div>}
                                     </div>
 
                                     <div className="px-4 mt-4 w-full flex flex-col gap-3">

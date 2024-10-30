@@ -12,7 +12,7 @@ import Logout from "../common/logout"
 
 const Header = () => {
   const { authUser } = useLogin();
-
+  
   return (
     <header className="flex items-center justify-between px-4 py-3 shadow-md bg-white border-secondary sticky top-0 z-50 text-white">
       <Link
@@ -31,7 +31,7 @@ const Header = () => {
       <div className="flex items-center gap-4">
         <Popover>
           <PopoverTrigger>
-            <Avatar width={40} height={40} />
+            <Avatar  width={50} height={50}/>
           </PopoverTrigger>
           <PopoverContent className="p-4 w-56 mr-1">
             <div className="w-full">

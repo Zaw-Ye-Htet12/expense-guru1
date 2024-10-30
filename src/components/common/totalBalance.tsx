@@ -8,7 +8,7 @@ const TotalBalance = ({ className }: { className?: string }) => {
   return (
     <div>
       {isFetching ? ( <h2 className={`font-bold text-3xl ${className}`}>
-        <Skeleton className="w-60 h-[48px] mb-3 bg-slate-200" />
+        <Skeleton className="w-60 h-[48px] mb-3 bg-slate-200 " />
     </h2>) : ( <h2 className={`font-bold text-3xl ${className}`}>
       <CountUp end={totalBalance} duration={1.4} redraw={false} /> MMK
     </h2>)}
