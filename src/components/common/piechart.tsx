@@ -50,7 +50,7 @@ export function PieChartDonut() {
   } satisfies ChartConfig
   console.log(chartData);
   return (
-    <Card className="flex flex-col w-[40%]">
+    <Card className="flex flex-col w-[100%]">
       <CardHeader className="items-center pb-0">
         <CardTitle>Category Usage</CardTitle>
         <CardDescription>Category usage based on transaction counts</CardDescription>
