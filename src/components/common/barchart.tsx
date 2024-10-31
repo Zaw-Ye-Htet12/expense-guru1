@@ -74,7 +74,7 @@ export function BarChartComponent({ className }: {className?: string}) {
   const chartData = months;
   return (
     <>
-      <Card className="flex flex-col w-[100%] py-6">
+      <Card className="flex flex-col w-[100%] py-6 ">
         <CardContent className="flex-1 pb-0">
           {isFetching ? (
             <BarChartSkeleton />
