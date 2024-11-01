@@ -86,7 +86,7 @@ export default function ProfileEditPage() {
                                     <span className="text-primary cursor-pointer" onClick={() => setIsChangePassword(true)}>Change passoword?</span>
                                 </div>
                             )}
-                            {isChangePassword && (
+                            {isChangePassword  && (
                                 <>
                                     <div className="px-4 mt-4 w-full flex flex-col gap-3">
                                         <Label htmlFor="currentPassword">
