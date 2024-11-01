@@ -169,7 +169,7 @@ export default function TransactionPage() {
             const dataToExcel = transactions.map((transaction) => ({
                 ID: transaction._id,
                 Amount: transaction.amount,
-                Category: transaction.categoryId.name || "Uncategorized",
+                Category: transaction.categoryId?.name || "Uncategorized",
                 Type: transaction.type,
                 CreatedAt: new Date(transaction.createdAt).toLocaleDateString(),
             }));
