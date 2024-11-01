@@ -12,7 +12,7 @@ import { AuthContext } from "@/components/context/AuthContext";
 export const useLogout =()=>{
     const {errorToast} =  useToastHook();
     const router = useRouter();
-    const { removeLoggedInUserData } = useLogin();
+    // const { removeLoggedInUserData } = useLogin();
     const { setAccessToken } = useContext(AuthContext);
 
     const logout =async()=>{
@@ -21,7 +21,8 @@ export const useLogout =()=>{
                 withCredentials: true
             });
             if(status === HttpStatus.CREATED){
-                removeLoggedInUserData();
+                // removeLoggedInUserData();
+                localStorage.removeItem("userData")
                 setAccessToken(null);
                 router.push(getRelevantRoute(Route.LOGIN))
             }

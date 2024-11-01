@@ -6,6 +6,7 @@ export const useTotalIncome = () => {
     const axiosPrivateInstance = useAxiosPrivate();
     const { errorToast } = useToastHook();
     const [totalIncome, setTotalIncome] = useState(0);
+    const [isFetching,setIsFetching] = useState(true)
     const fetchTotalIncome = useCallback(async () => {
         try {
             const response = await axiosPrivateInstance.get("/transaction/total/income");
@@ -14,10 +15,12 @@ export const useTotalIncome = () => {
             return errorToast(
                 error.response.message || error.response.data.error
             )
+        }finally{
+            setIsFetching(false)
         }
     }, [errorToast])
     useEffect(() => {
         fetchTotalIncome();
     }, [])
-    return { totalIncome };
+    return { totalIncome ,isFetching};
 }

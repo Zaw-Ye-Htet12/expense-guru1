@@ -73,11 +73,6 @@ export const DESKTOP_SIDE_MENU = [
     icon: LayersIcon,
   },
   {
-    name: "Wallet",
-    route: Route.WALLET,
-    icon: WalletIcon,
-  },
-  {
     name: "Profile",
     route: Route.PROFILE,
     icon: SettingsIcon,
