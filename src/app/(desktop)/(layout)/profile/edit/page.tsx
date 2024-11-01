@@ -42,6 +42,7 @@ export default function ProfileEditPage() {
             email: user.email,
             password: isChangePassword ? user.newPassword : ""
         })
+
     };
     return (
         <div className="h-full -z-10">
