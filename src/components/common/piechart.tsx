@@ -48,7 +48,6 @@ export function PieChartDonut() {
   const chartConfig = {
 
   } satisfies ChartConfig
-  console.log(chartData);
   return (
     <Card className="flex flex-col w-[100%]">
       <CardHeader className="items-center pb-0">

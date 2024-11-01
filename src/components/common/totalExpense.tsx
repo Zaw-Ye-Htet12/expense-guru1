@@ -6,9 +6,9 @@ import { Skeleton } from "../ui/skeleton";
 const TotalExpense = ({ className }: { className?: string }) => {
   const { totalExpense, isFetching } = useTotalExpense();
   return (
-    <div>
+    <div>         
       {isFetching ? (<h2>
-        <Skeleton className="w-60 h-[48px] mb-3 bg-slate-200" />
+        <Skeleton className="w-40 h-[28px] mb-3 bg-slate-200 md:w-60 md:h-[48px]" />
       </h2>
       ) : (
         <h2 className={`font-bold text-3xl ${className}`}>

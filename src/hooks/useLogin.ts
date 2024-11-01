@@ -19,13 +19,13 @@ export interface User {
 }
 
 export function useLogin() {
-  const  axiosPrivateInstance  = useAxiosPrivate();
-  const { authUser, setAuthUser, setAccessToken } = useContext(AuthContext);
   const { errorToast,successToast } = useToastHook();
+  const { logout } = useLogout();
+  const  axiosPrivateInstance  = useAxiosPrivate();
   const [loading, setLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const router = useRouter();
-  const { logout } = useLogout();
+  const { authUser, setAuthUser, setAccessToken } = useContext(AuthContext);
 
   const setLoggedInUserData = async () => {
     try {
@@ -109,7 +109,7 @@ export function useLogin() {
     }
   }
 
-  const checkPassword = async (password: string, id: string) => {
+  const checkPassword = async (password: string, id: string | undefined) => {
     try {
       const {data} =await axiosInstance.post('/users/checkPassword', { password, id });
       return data.success;

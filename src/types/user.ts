@@ -10,7 +10,7 @@ export interface User {
 }
 
 export interface EditUser{
-  id:string,
+  id:string | undefined,
   username:string;
   email:string;
   password:string;
