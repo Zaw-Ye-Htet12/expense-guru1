@@ -16,6 +16,10 @@ import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
+import { exportData } from "@/utils/frontend/exportData";
+import { formatMoney } from "@/utils/frontend/money";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export type Transaction = {
     _id: string,
@@ -23,6 +27,7 @@ export type Transaction = {
     walletId: string,
     amount: number,
     type: string,
+    note?: string,
     createdAt: string,
     updatedAt: string
 }
@@ -88,8 +93,9 @@ export default function TransactionPage() {
                 return amount.toString().includes(filterValue);
             },
             cell: ({ row }) => {
+                const formatedMoney = formatMoney(row.original.amount)
                 return <p className="text-left">
-                    <span className={`${row.original.type === 'income' ? 'text-primary' : 'text-destructive'}`}>{row.original.amount} MMK</span>
+                    <span className={`${row.original.type === 'income' ? 'text-primary' : 'text-destructive'}`}>{formatedMoney} MMK</span>
                 </p>
             }
         },
@@ -164,23 +170,19 @@ export default function TransactionPage() {
     }
     const transactionParams = { id: currentTransaction?._id || "" };
 
-    const exportTransaction = async () => {
-        try {
-            const dataToExcel = transactions.map((transaction) => ({
-                ID: transaction._id,
-                Amount: transaction.amount,
-                Category: transaction.categoryId?.name || "Uncategorized",
-                Type: transaction.type,
-                CreatedAt: new Date(transaction.createdAt).toLocaleDateString(),
-            }));
-            const worksheet = XLSX.utils.json_to_sheet(dataToExcel);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
-            const excelBuffer = XLSX.write(workbook, { type: "array", bookType: "xlsx" });
-            const data = new Blob([excelBuffer], { type: "application/octet-stream" });
-            saveAs(data, "Transactions.xlsx")
-        } catch (err: any) {
-            console.log(err)
+    const exportTransaction = async (format:string) => {
+        const transactionMapper = (transaction: Transaction) => ({
+            ID: transaction._id,
+            Amount: formatMoney(transaction.amount),
+            Category: transaction.categoryId?.name || "Uncategorized",
+            Type: transaction.type,
+            Note: transaction.note || "N/A",
+            CreatedAt: new Date(transaction.createdAt).toLocaleDateString(),
+        });
+        if(format === "csv"){
+            exportData(filteredTransactions, 'csv', 'Transactions', transactionMapper)
+        }else if(format === "xlsx"){
+            exportData(filteredTransactions, 'xlsx', 'Transactions', transactionMapper)
         }
     }
     return (
@@ -194,7 +196,15 @@ export default function TransactionPage() {
                     <Link href="/transactions/create">
                         <Button>Add New Transaction</Button>
                     </Link>
-                    <Button className="ms-2" onClick={() => exportTransaction()}>Export</Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button className="ms-2">Export</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem onClick={()=>exportTransaction('csv')}>CSV</DropdownMenuItem>
+                            <DropdownMenuItem onClick={()=>exportTransaction('xlsx')}>XLSX</DropdownMenuItem>                            
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                     <DataTable
                         key={transactions.length}
                         dataName="transactions"
