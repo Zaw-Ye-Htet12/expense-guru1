@@ -12,6 +12,7 @@ const header = new Map([
     [getRelevantRoute(Route.ADD), "Create"],
     [getRelevantRoute(Route.CATEGORY), "Category"],
     [getRelevantRoute(Route.TRANSACTION), "Transaction"],
+    [getRelevantRoute(Route.PROFILE_EDIT), "Edit"]
   ]);
   
 

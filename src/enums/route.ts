@@ -7,6 +7,7 @@ export enum Route {
     STATISTIC = "/statistic",
     WALLET = "/wallet",
     PROFILE = "/profile",
+    PROFILE_EDIT = "/profile/edit",
     ADD = "/add",
     CATEGORY = "/category",
     TRANSACTION = "/transactions",
