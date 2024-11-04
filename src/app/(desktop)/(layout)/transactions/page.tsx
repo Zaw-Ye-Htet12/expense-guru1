@@ -20,6 +20,7 @@ import { exportData } from "@/utils/frontend/exportData";
 import { formatMoney } from "@/utils/frontend/money";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
 import { useToastHook } from "@/hooks/useToastHook";
 
 export type Transaction = {
@@ -172,24 +173,21 @@ export default function TransactionPage() {
     }
     const transactionParams = { id: currentTransaction?._id || "" };
 
-    const exportTransaction = async (format: string) => {
-        if (filteredTransactions.length === 0) {
-            return errorToast("No transactions to export");
-        } else {
 
-            const transactionMapper = (transaction: Transaction) => ({
-                ID: transaction._id,
-                Amount: formatMoney(transaction.amount),
-                Category: transaction.categoryId?.name || "Uncategorized",
-                Type: transaction.type,
-                Note: transaction.note || "N/A",
-                CreatedAt: new Date(transaction.createdAt).toLocaleDateString(),
-            });
-            if (format === "csv") {
-                exportData(filteredTransactions, format, 'Transactions', transactionMapper);
-            } else if (format === "xlsx") {
-                exportData(filteredTransactions, format, 'Transactions', transactionMapper);
-            }
+    const exportTransaction = async (format:string) => {
+        const transactionMapper = (transaction: Transaction) => ({
+            ID: transaction._id,
+            Amount: formatMoney(transaction.amount),
+            Category: transaction.categoryId?.name || "Uncategorized",
+            Type: transaction.type,
+            Note: transaction.note || "N/A",
+            CreatedAt: new Date(transaction.createdAt).toLocaleDateString(),
+        });
+        if(format === "csv"){
+            exportData(filteredTransactions, 'csv', 'Transactions', transactionMapper)
+        }else if(format === "xlsx"){
+            exportData(filteredTransactions, 'xlsx', 'Transactions', transactionMapper)
+
         }
 
     }
@@ -209,8 +207,10 @@ export default function TransactionPage() {
                             <Button className="ms-2">Export</Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
+
                             <DropdownMenuItem onClick={() => exportTransaction('csv')}>CSV</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => exportTransaction('xlsx')}>XLSX</DropdownMenuItem>
+
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <DataTable
