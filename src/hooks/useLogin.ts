@@ -11,6 +11,7 @@ import { AuthContext } from "@/components/context/AuthContext";
 import { Sign } from "crypto";
 import { EditUser } from "@/types/user";
 import { useLogout } from "./useLogout";
+import { resetPasswordType } from "@/validations/signup";
 
 export interface User {
   id?: string,
@@ -19,9 +20,9 @@ export interface User {
 }
 
 export function useLogin() {
-  const { errorToast,successToast } = useToastHook();
+  const { errorToast, successToast } = useToastHook();
   const { logout } = useLogout();
-  const  axiosPrivateInstance  = useAxiosPrivate();
+  const axiosPrivateInstance = useAxiosPrivate();
   const [loading, setLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const router = useRouter();
@@ -88,7 +89,7 @@ export function useLogin() {
 
   const update = async (user: Omit<EditUser, "confirmPassword">) => {
     try {
-      const { status,data } = await axiosInstance.put("/users/edit", user);
+      const { status, data } = await axiosInstance.put("/users/edit", user);
       if (status === HttpStatus.CREATED) {
         if (data.passwordChanged) {
           await logout();
@@ -111,7 +112,7 @@ export function useLogin() {
 
   const checkPassword = async (password: string, id: string | undefined) => {
     try {
-      const {data} =await axiosInstance.post('/users/checkPassword', { password, id });
+      const { data } = await axiosInstance.post('/users/checkPassword', { password, id });
       return data.success;
     } catch (error: any) {
       return errorToast(
@@ -119,6 +120,33 @@ export function useLogin() {
       );
     }
   };
+  const sendPasswordRecoveryEmail = async (email: string) => {
+    try {
+      const { data, status } = await axiosPrivateInstance.post("/users/recover-password", email);
+      if (status === HttpStatus.CREATED) {
+        router.push(getRelevantRoute(Route.LOGIN));
+        successToast(data.message);
+      }
+    } catch (error: any) {
+      return errorToast(
+        error.response.data.message || error.response.data.error
+      );
+    }
+  };
+
+  const resetPassword = async (id: string | null, user: Omit<resetPasswordType, "confirmPassword">) => {
+    try {
+      const { status, data } = await axiosPrivateInstance.put("/users/reset-password", { id, user });
+      if (status === HttpStatus.CREATED) {
+        router.push(getRelevantRoute(Route.LOGIN));
+        successToast(data.message)
+      }
+    } catch (error: any) {
+      return errorToast(
+        error.response.data.message || error.response.data.error
+      );
+    }
+  }
   useEffect(() => {
     if (isLoggedIn) {
       router.push(getRelevantRoute(Route.HOME));
@@ -133,6 +161,8 @@ export function useLogin() {
     getLoggedInUserData,
     removeLoggedInUserData,
     setLoggedInUserData,
+    sendPasswordRecoveryEmail,
+    resetPassword,
     authUser,
     isLoggedIn,
     loading,
