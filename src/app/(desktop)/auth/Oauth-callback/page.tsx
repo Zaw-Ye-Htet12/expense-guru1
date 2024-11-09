@@ -29,7 +29,7 @@ export default function GoogleAuthCallback() {
     <div>
       <div className="h-dvh w-full flex flex-col justify-center items-center text-white font-bold text-3xl bg-[#488d88]">
         <Lottie animationData={Loading} className="w-40 h-40" />
-        <div className="relative top-[-10px] text-base">Authenticating with Google...</div>
+        <div className="relative top-[-10px] text-base">Redirecting to Expense Tracker...</div>
       </div>
     </div>
   );
