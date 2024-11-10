@@ -11,11 +11,11 @@ const publicPaths = [
   "/login",
   "/signup",
   "/welcome",
+  "/forgot-password",
   "/mobile/login",
   "/mobile/signup",
   "/mobile/welcome",
-  "/forgot-password",
-  // "/reset-password"
+  "/mobile/forgot-password"
 ];
 
 const redirectTo = (url: string, req: NextRequest) => {
@@ -50,8 +50,8 @@ export default async function middleware(req: NextRequest) {
   }
   if(!token && !isPubliPath && !isAPIRoute(pathname)){
     if(pathname.includes('reset-password')){
-      const id = searchParams.get("id");
-      if (!id) {
+      const token = searchParams.get("token");
+      if (!token) {
         return redirectTo(Route.LOGIN, req);
       }
       return NextResponse.next();

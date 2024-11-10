@@ -17,6 +17,7 @@ export interface User {
   id?: string,
   username: string;
   email: string;
+  Oauth?:boolean
 }
 
 export function useLogin() {
@@ -37,6 +38,7 @@ export function useLogin() {
         id: data.id,
         username: data.username,
         email: data.email,
+        Oauth:false
       };
       localStorage.setItem("userData", JSON.stringify(userData));
       setAuthUser(userData);
@@ -134,9 +136,9 @@ export function useLogin() {
     }
   };
 
-  const resetPassword = async (id: string | null, user: Omit<resetPasswordType, "confirmPassword">) => {
+  const resetPassword = async (token: string | null, user: Omit<resetPasswordType, "confirmPassword">) => {
     try {
-      const { status, data } = await axiosPrivateInstance.put("/users/reset-password", { id, user });
+      const { status, data } = await axiosPrivateInstance.put("/users/reset-password", { token, user });
       if (status === HttpStatus.CREATED) {
         router.push(getRelevantRoute(Route.LOGIN));
         successToast(data.message)

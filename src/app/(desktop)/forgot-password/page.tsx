@@ -14,6 +14,7 @@ export default function ForgotPassword(){
               style={{ width: "600px", height: "600px" }}
             />
           }>
+            <div className="flex w-full justify-center text-4xl font-bold mb-8">Recover Password</div>
             <RecoverPasswordForm className="w-[80%]"/>
         </AuthLayout>
     )

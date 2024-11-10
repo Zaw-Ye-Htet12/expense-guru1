@@ -11,5 +11,7 @@ export enum Route {
     ADD = "/add",
     CATEGORY = "/category",
     TRANSACTION = "/transactions",
+    FORGOTPASSWORD="/forgot-password",
+    RESETPASSWORD = "/reset-password"
   }
   
