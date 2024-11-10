@@ -5,22 +5,22 @@ import {
   DialogHeader,
   DialogContent,
   DialogTitle,
-  DialogTrigger,  
+  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import TransactionDetail from "@/app/mobile/(layout)/transactions/[id]/page";
+import TransactionDetail from "@/components/common/transactionDetail";
 
 interface Props {
   isOpen?: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  params : {id:string }
+  id: string;
 }
 
-const TransactionDialogBox = ({isOpen, setIsOpen, params} : Props) => {
+const TransactionDialogBox = ({ isOpen, setIsOpen, id }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <DialogContent className="w-[90%]">
-        <TransactionDetail params={params} onClose={()=>setIsOpen(false)} />
+        <TransactionDetail id={id} onClose={() => setIsOpen(false)} />
       </DialogContent>
     </Dialog>
   );

@@ -1,4 +1,4 @@
-import { TransactionForm } from "@/app/mobile/(layout)/add/page"
+import { TransactionForm } from "@/components/common/transactionForm"
 import Link from "next/link"
 
 export default function CreatePage(){
