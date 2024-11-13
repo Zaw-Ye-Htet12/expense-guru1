@@ -1,6 +1,6 @@
 "use client"
 import { DataTable } from "@/components/common/data-table";
-import { DatePickerWithRange } from "@/components/common/datePicker";
+import { DatePickerWithRange } from "@/components/common/datePickerRange";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

@@ -8,6 +8,7 @@ import { TransactionTab } from "@/enums/transactionTab";
 import { HttpStatus } from "@/enums/httpStatus";
 import { useTab } from "./useTab";
 import { sanitizeMoney } from "@/utils/frontend/money";
+import { ScheduleTransactionType } from "@/validations/transaction/schedule";
 
 export const useTransaction = () => {
     const axiosPrivateInstance = useAxiosPrivate();
@@ -16,7 +17,7 @@ export const useTransaction = () => {
     const [isFetching, setIsFetching] = useState<boolean>(true);
     const { currentTabParam, currentMonthParam } = useTab();
 
-    const fetchTransactions = useCallback(async (params?: {[key: string]: any}) => {
+    const fetchTransactions = useCallback(async (params?: { [key: string]: any }) => {
         setIsFetching(true);
         try {
             const response = await axiosPrivateInstance.get(`/transaction`, {
@@ -31,13 +32,13 @@ export const useTransaction = () => {
         }
     }, [errorToast])
 
-    const createTransaction = useCallback(async (transaction: TransactionType) => {
+    const createTransaction = useCallback(async (payload: TransactionType) => {
         try {
             const body = {
-                categoryId: transaction.categoryId,
-                amount: sanitizeMoney(transaction.amount),
-                type: transaction.type,
-                note: transaction.note,
+                categoryId: payload.categoryId,
+                amount: sanitizeMoney(payload.amount),
+                type: payload.type,
+                note: payload.note,
             };
             const response = await axiosPrivateInstance.post("/transaction/create", body)
             if (response.data.status === HttpStatus.CREATED) {
@@ -48,13 +49,36 @@ export const useTransaction = () => {
         }
     }, [errorToast, successToast, currentTabParam])
 
+    const createScheduleTransaction = useCallback(async (payload: ScheduleTransactionType) => {
+        try {
+            const body = {
+                data: {
+                    categoryId: payload.categoryId,
+                    amount: sanitizeMoney(payload.amount),
+                    type: payload.type,
+                    note: payload.note
+                },
+                transactionName: payload.transactionName,
+                frequency: payload.frequency,
+                startDate: payload.startDate
+            };
+            const response = await axiosPrivateInstance.post("/transaction/schedule", body);
+            if (response.data.status === HttpStatus.CREATED) {
+                return successToast(response.data.message);
+            }
+        } catch (err: any) {
+            return errorToast(err.response.data.message || err.response.data.error);
+        }
+    }, [errorToast, successToast])
+
     useEffect(() => {
-        fetchTransactions({tab: currentTabParam, month: currentMonthParam}); 
+        fetchTransactions({ tab: currentTabParam, month: currentMonthParam });
     }, [currentTabParam, currentMonthParam]);
 
     return {
         transactions,
         isFetching,
-        createTransaction
+        createTransaction,
+        createScheduleTransaction,
     }
 }

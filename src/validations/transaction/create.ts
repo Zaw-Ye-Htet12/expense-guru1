@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { isMobile } from 'react-device-detect';
 
-export const createValidation=(isDesktop:boolean) => z.object({
+export const createValidation=() => z.object({
     categoryId: z.string({ message: "Category must not be empty." }),
     amount: z.string({ message: "Amount must not be empty." })
         .refine((val) => /^[1-9][0-9,]*$/.test(val.replace(/,/g, "")), {

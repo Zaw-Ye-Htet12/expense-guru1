@@ -20,7 +20,7 @@ const Header = () => {
     const {back} = useRouter();
     let currentPath = usePathname();
     const isHome = currentPath === "/mobile/home";
-    currentPath = currentPath.includes("/transaction") ? getRelevantRoute(Route.TRANSACTION) : currentPath;
+    currentPath = currentPath.includes("/transactions") ? getRelevantRoute(Route.TRANSACTION) : currentPath;
     return (
         <>
             {!isHome && (
