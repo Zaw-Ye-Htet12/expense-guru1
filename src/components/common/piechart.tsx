@@ -50,7 +50,7 @@ export function PieChartDonut() {
   } satisfies ChartConfig
   return (
     <Card className="flex flex-col w-[100%]">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="items-center pb-0 text-center">
         <CardTitle>Category Usage</CardTitle>
         <CardDescription>Category usage based on transaction counts</CardDescription>
       </CardHeader>
@@ -115,7 +115,7 @@ export function PieChartDonut() {
           </ChartContainer>
         )}
         </>
-        : (<div className="flex justify-center items-center h-full text-primary text-xl">
+        : (<div className="flex justify-center items-center h-full text-primary text-xl py-[100px]">
           No Category Used yet
         </div>)}
         

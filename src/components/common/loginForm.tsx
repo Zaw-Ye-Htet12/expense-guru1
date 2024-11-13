@@ -12,6 +12,11 @@ import { Form, Formik } from "formik";
 import Link from "next/link";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { getRelevantRoute } from "@/lib/route";
+import GoogleLogo from '../../../public/google.svg';
+import GithubLogo from '../../../public/github.svg'
+import Image from "next/image";
+
+
 
 const LoginForm = ({ className = "w-full" }: { className?: string }) => {
   const { login, loading } = useLogin();
@@ -70,9 +75,23 @@ const LoginForm = ({ className = "w-full" }: { className?: string }) => {
                     "http://localhost:8000/api/v1/auth/google";
                 }}
               >
-                Sign in with Google
+                <div className="rounded">
+                  <Image src={GoogleLogo} alt="google_logo" className="w-7 h-7 mr-2 bg-transparent" />
+                </div><span>Continue with Google</span>
               </Button>
-
+              <Button
+                className="w-full bg-white text-[#51A7A1] border"
+                variant="ghost"
+                type="button"
+                onClick={() => {
+                  window.location.href =
+                    "http://localhost:8000/api/v1/auth/github";
+                }}
+              >
+                <div className="rounded">
+                  <Image src={GithubLogo} alt="google_logo" className="w-7 h-7 mr-2 bg-transparent" />
+                </div><span>Continue with Github</span>
+              </Button>
               <Label className="text-center w-full flex justify-center">
                 Do not have an account?
                 <Link
@@ -82,7 +101,7 @@ const LoginForm = ({ className = "w-full" }: { className?: string }) => {
                   Signup
                 </Link>
               </Label>
-          </div>
+            </div>
           </CardContent>
         </Form>
       </Formik>
