@@ -16,7 +16,7 @@ export type Cateogry = {
 }
 
 
-export default function CategoryPage() {
+const CategoryPage=()=> {
   const { categories, isFetching, deleteCategory, editCategory, loading, createCategory } = useCategory();
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
@@ -209,3 +209,5 @@ export default function CategoryPage() {
     </div>
   )
 }
+
+export default CategoryPage;

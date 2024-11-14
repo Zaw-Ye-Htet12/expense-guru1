@@ -8,7 +8,7 @@ import {
   DialogTrigger,  
   DialogFooter,
 } from "@/components/ui/dialog";
-import TransactionDetail from "@/app/mobile/(layout)/transactions/[id]/page";
+import { TransactionDetail } from "@/components/common/transactionDetail";
 
 interface Props {
   isOpen?: boolean;
@@ -20,7 +20,7 @@ const TransactionDialogBox = ({isOpen, setIsOpen, params} : Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <DialogContent className="w-[90%]">
-        <TransactionDetail params={params} onClose={()=>setIsOpen(false)} />
+        <TransactionDetail id={params.id} onClose={()=>setIsOpen(false)} />
       </DialogContent>
     </Dialog>
   );
