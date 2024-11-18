@@ -12,7 +12,7 @@ export const signUpValidation = z
   })
   .required();
 
-  export const signUpValidationFormSchema = z
+export const signUpValidationFormSchema = z
   .object({
     username: z.string({ message: "Please enter a username" }),
     email: z
@@ -48,29 +48,29 @@ export const signUpValidation = z
     }
   );
 
-  export const editUserValidationSchema=(isChangePassword:boolean) => z
+export const editUserValidationSchema = (isChangePassword: boolean) => z
   .object({
-    username:z.string({message:"Please enter a username"}),
+    username: z.string({ message: "Please enter a username" }),
     email: z
       .string({ message: "Please enter an email address" })
       .email({ message: "Invalid email format" }),
     newPassword: isChangePassword ? z
-    .string({ message: "Please enter a password" })
-    .min(6, "Password must be at least 6 characters long")
-    .max(20, "Password must be at most 20 characters long")
-    .regex(
-      /^(?=.*[a-z])/,
-      "Password must contain at least one lowercase letter"
-    )
-    .regex(
-      /^(?=.*[A-Z])/,
-      "Password must contain at least one uppercase letter"
-    )
-    .regex(/^(?=.*\d)/, "Password must contain at least one number")
-    .regex(
-      /^(?=.*[@$!%*?&])/,
-      "Password must contain at least one special character"
-    ) : z.string().optional(),
+      .string({ message: "Please enter a password" })
+      .min(6, "Password must be at least 6 characters long")
+      .max(20, "Password must be at most 20 characters long")
+      .regex(
+        /^(?=.*[a-z])/,
+        "Password must contain at least one lowercase letter"
+      )
+      .regex(
+        /^(?=.*[A-Z])/,
+        "Password must contain at least one uppercase letter"
+      )
+      .regex(/^(?=.*\d)/, "Password must contain at least one number")
+      .regex(
+        /^(?=.*[@$!%*?&])/,
+        "Password must contain at least one special character"
+      ) : z.string().optional(),
     confirmPassword: isChangePassword ? z.string({ message: "Please enter a confirm password" }) :
       z.string().optional(),
   })
@@ -83,6 +83,37 @@ export const signUpValidation = z
       path: ["confirmPassword"],
     })
 
-    
+export const resetPasswordValidation = z
+  .object({
+    password: z
+      .string({ message: "Please enter a password" })
+      .min(6, "Password must be at least 6 characters long")
+      .max(20, "Password must be at most 20 characters long")
+      .regex(
+        /^(?=.*[a-z])/,
+        "Password must contain at least one lowercase letter"
+      )
+      .regex(
+        /^(?=.*[A-Z])/,
+        "Password must contain at least one uppercase letter"
+      )
+      .regex(/^(?=.*\d)/, "Password must contain at least one number")
+      .regex(
+        /^(?=.*[@$!%*?&])/,
+        "Password must contain at least one special character"
+      ),
+    confirmPassword: z.string({ message: "Please enter a confirm password" }),
+  })
+  .required()
+  .refine(
+    (values) => {
+      return values.password === values.confirmPassword;
+    },
+    {
+      message: "Password and confirm password must be same",
+      path: ["confirmPassword"],
+    }
+  );
+export type resetPasswordType = z.infer<typeof resetPasswordValidation>
 export type SignUpUserType = z.infer<typeof signUpValidationFormSchema>;
 // export type EditUserType = z.infer<typeof editUserValidationSchema>

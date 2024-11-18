@@ -9,4 +9,13 @@ export const signInValidation = z
   })
   .required();
 
+export const emailValidation = z
+  .object({
+    email: z
+      .string({ message: "email field is required" })
+      .email({ message: "email format is wrong" }),
+  });
+
+
+export type EmailVerifyType = z.infer<typeof emailValidation>;
 export type SignInType = z.infer<typeof signInValidation>;

@@ -15,7 +15,6 @@ import { useTransaction } from "@/hooks/useTransaction";
 const Page = () => {
   const { authUser } = useLogin();
   const { totalBalance } = useWallet();
-
   const financeCards = [
     {
       label: "Total balance",
