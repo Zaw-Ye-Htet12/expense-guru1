@@ -60,7 +60,10 @@ export const useTransaction = () => {
                 },
                 transactionName: payload.transactionName,
                 frequency: payload.frequency,
-                startDate: payload.startDate
+                startDate: payload.startDate,
+                endDate: payload.endDate,
+                dayOfWeek: Number(payload.dayOfWeek),
+                dayOfMonth: Number(payload.dayOfMonth)
             };
             const response = await axiosPrivateInstance.post("/transaction/schedule", body);
             if (response.data.status === HttpStatus.CREATED) {

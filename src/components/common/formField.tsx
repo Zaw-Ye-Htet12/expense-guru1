@@ -13,6 +13,7 @@ interface InputProps<T> extends React.InputHTMLAttributes<HTMLInputElement> {
     dataLength?: number;
     optionValue?: string;
     optionName?: string;
+    selectedItem?: (item: string)=>void;
 }
  
 const FormField = <T extends Record<string,any>>({
@@ -27,7 +28,7 @@ const FormField = <T extends Record<string,any>>({
   dataLength,
   optionValue,
   optionName,
-  onChange,
+  selectedItem,
   ...props
 }: InputProps<T>) =>{
     const [field,meta] = useField(name);
@@ -52,7 +53,7 @@ const FormField = <T extends Record<string,any>>({
             )}
             field={field}
             form={form}
-            onChange={onChange}
+            selectedItem={selectedItem}
           />
           {meta.error && meta.touched && (
             <p className="text-red-500 p-0 m-0 text-xs">{String(meta.error)}</p>

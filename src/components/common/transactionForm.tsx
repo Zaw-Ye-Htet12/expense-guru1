@@ -22,7 +22,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "../ui/switch";
 import { DatePicker } from "./datePicker";
-import { ScheduleTransactionType, scheduleValidation } from "@/validations/transaction/schedule";
+import {
+  ScheduleTransactionType,
+  scheduleValidation,
+} from "@/validations/transaction/schedule";
 
 export const TransactionForm = ({
   className,
@@ -35,40 +38,40 @@ export const TransactionForm = ({
   const { categories, fetchMore, hasMore } = useCategory();
   const { handleTabChange, currentTabParam } = useTab();
   const [isSchedule, setIsSchedule] = useState(false);
-  const [selectedFrequency, setSelectedFrequency] = useState<string>("Once");
+  const [selectedFrequency, setSelectedFrequency] = useState<string>("")
 
-  const [initialValue, setInitialValue] = useState<ScheduleTransactionType>({
+  const initialValue:ScheduleTransactionType = {
     categoryId: "",
     amount: "",
     type: "",
     note: undefined,
     transactionName: "",
-    frequency: "Once",
+    frequency: "",
     startDate: new Date(),
-    endDate: new Date()
-  });
+    endDate: new Date(),
+    dayOfWeek: 0,
+    dayOfMonth: 0
+  };
 
-  const handleSubmit = async (values: ScheduleTransactionType, { resetForm }: FormikHelpers<ScheduleTransactionType>) => {
-    const transactionType = isDesktop ? values.type : currentTabParam.toLowerCase();
+  const handleSubmit = async (
+    values: ScheduleTransactionType,
+    { resetForm }: FormikHelpers<ScheduleTransactionType>
+  ) => {
+    console.log('clicked')
+    const transactionType = isDesktop
+      ? values.type
+      : currentTabParam.toLowerCase();
     const data: ScheduleTransactionType = {
-      ...values, type: transactionType
-    }
-    isSchedule ? await createScheduleTransaction(data) : await createTransaction(data);
-    let initial_value: ScheduleTransactionType = {
-      categoryId: "",
-      amount: "",
-      type: "",
-      note: undefined,
-      transactionName: "",
-      frequency: "Once",
-      startDate: new Date(),
-      endDate: new Date(),
+      ...values,
+      type: transactionType,
     };
-    if (values.note) {
-      initial_value = { ...initial_value, note: "" };
+    if (isSchedule) {
+      await createScheduleTransaction(data);
+    } else {
+      await createTransaction(data);
     }
-    setInitialValue(initial_value);
-    resetForm();
+    resetForm({values: initialValue});
+    setSelectedFrequency("")
   };
 
   const getButtonText = () => {
@@ -80,10 +83,6 @@ export const TransactionForm = ({
       return "New Transaction";
     }
   };
-
-  const handleFrequencyChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-    setSelectedFrequency(event.target.value)
-  }
 
   const transactionTypeOptions = [
     { value: "income", label: "Income" },
@@ -97,7 +96,8 @@ export const TransactionForm = ({
   ];
 
   const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const WeeklyOptions = daysOfWeek.map((day, index) => ({ value: index, label: day }));
+  const WeeklyOptions = daysOfWeek.map((day, index) => ({ value: index.toString(), label: day }));
+  const MonthlyOptions = [...Array.from({ length: 31 }, (_, i)=>({ value: (i + 1).toString(), label: `Day ${i + 1}`}))]
 
   return (
     <>
@@ -115,10 +115,7 @@ export const TransactionForm = ({
       <Formik
         initialValues={initialValue}
         onSubmit={handleSubmit}
-        enableReinitialize={true}
-        validationSchema={toFormikValidationSchema(
-          isSchedule ? scheduleValidation() : createValidation()
-        )}
+        validationSchema={toFormikValidationSchema(isSchedule ? scheduleValidation(selectedFrequency) : createValidation())}
       >
         <Form>
           <div className="px-4 mt-4 w-full flex flex-col gap-3">
@@ -186,11 +183,12 @@ export const TransactionForm = ({
               />
             </div>
           )}
-          <div
-            className="ps-4 mt-4 flex items-center space-x-2"
-            onClick={() => setIsSchedule((prev) => !prev)}
-          >
-            <Switch id="schedule-transaction" className="" />
+          <div className="ps-4 mt-4 flex items-center space-x-2">
+            <Switch
+              id="schedule-transaction"
+              className=""
+              onClick={() => setIsSchedule((prev) => !prev)}
+            />
             <Label htmlFor="schedule-transaction">Schedule</Label>
           </div>
           {isSchedule && (
@@ -220,20 +218,44 @@ export const TransactionForm = ({
                   optionValue="value"
                   optionName="label"
                   className="h-65"
-                  onChange={handleFrequencyChange}
+                  selectedItem={(item) =>setSelectedFrequency(item) }
                 />
               </div>
-              {selectedFrequency === 'Weekly' && (
+              {(selectedFrequency && selectedFrequency === "Weekly") && (
                 <div className="px-4 mt-4 flex flex-col gap-3">
                   <span className="flex justify-between items-center">
                     <Label htmlFor="weekly">
                       <span>Every</span>
                     </Label>
                   </span>
-                  <FormField as={SelectBox} name="weekly" id="weekly" options={WeeklyOptions} optionValue="value" optionName="label" />
+                  <FormField
+                    as={SelectBox}
+                    name="dayOfWeek"
+                    id="weekly"
+                    options={WeeklyOptions}
+                    optionValue="value"
+                    optionName="label"
+                  />
                 </div>
               )}
-              <div className="px-4 mt-4 flex justify-start gap-2 items-center">
+              {(selectedFrequency && selectedFrequency === "Monthly") && (
+                <div className="px-4 mt-4 flex flex-col gap-3">
+                  <span className="flex justify-between items-center">
+                    <Label htmlFor="monthly">
+                      <span>Every</span>
+                    </Label>
+                  </span>
+                  <FormField
+                    as={SelectBox}
+                    name="dayOfMonth"
+                    id="monthly"
+                    options={MonthlyOptions}
+                    optionValue="value"
+                    optionName="label"
+                  />
+                </div>
+              )}
+              <div className="px-4 mt-4 flex flex-wrap justify-start gap-2 items-center">
                 <div className="flex flex-col gap-3">
                   <span className="flex justify-between items-center">
                     <Label htmlFor="startDate">
@@ -242,14 +264,16 @@ export const TransactionForm = ({
                   </span>
                   <FormField as={DatePicker} name="startDate" id="startDate" />
                 </div>
-                <div className="flex flex-col gap-3">
-                  <span className="flex justify-between items-center">
-                    <Label htmlFor="endDate">
-                      <span>End Date</span>
-                    </Label>
-                  </span>
-                  <FormField as={DatePicker} name="endDate" id="endDate" />
-                </div>
+                {(selectedFrequency && selectedFrequency !== "Once") && (
+                  <div className="flex flex-col gap-3">
+                    <span className="flex justify-between items-center">
+                      <Label htmlFor="endDate">
+                        <span>End Date</span>
+                      </Label>
+                    </span>
+                    <FormField as={DatePicker} name="endDate" id="endDate" />
+                  </div>
+                )}
               </div>
             </>
           )}
