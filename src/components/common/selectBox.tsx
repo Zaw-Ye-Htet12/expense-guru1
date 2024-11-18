@@ -17,7 +17,8 @@ interface SelectBoxProps<T> extends FieldProps {
   dataLength?: number;
   optionValue?: string;
   optionName?: string;
-  className?:string
+  className?: string;
+  selectedItem?: (item: string) => void;
 }
 const SelectBox = <T extends Record<string, any>>({
   options,
@@ -29,7 +30,8 @@ const SelectBox = <T extends Record<string, any>>({
   dataLength = 0,
   optionValue = "_id",
   optionName = "name",
-  className
+  className,
+  selectedItem,
 }: SelectBoxProps<T>) => {
   const [selectValue, setSelectValue] = useState(field.value || "");
 
@@ -40,6 +42,7 @@ const SelectBox = <T extends Record<string, any>>({
   const handleChange = (value: string) => {
     setSelectValue(value);
     form.setFieldValue(field.name, value);
+    selectedItem?.(value)
   };
 
   const error = form.errors[field.name];

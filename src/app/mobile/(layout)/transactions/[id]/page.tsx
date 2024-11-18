@@ -1,12 +1,12 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { TransactionDetail } from "@/components/common/transactionDetail";
+import TransactionDetail from "@/components/common/transactionDetail";
 
+const Page = ({ params: { id } }: { params: { id: string } }) => {
+  
+  return (
+    <>
+      <TransactionDetail id={id}/>
+    </>
+  );
+};
 
-export default function TransactionDetailPage({params}:{params:{id:string}}){
-    return (
-        <TransactionDetail id={params.id} />
-    )
-}
-
-
+export default Page;

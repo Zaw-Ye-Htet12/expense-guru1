@@ -1,13 +1,12 @@
 "use client"
 import { DataTable } from "@/components/common/data-table";
-import { DatePickerWithRange } from "@/components/common/datePicker";
+import { DatePickerWithRange } from "@/components/common/datePickerRange";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTransaction } from "@/hooks/useTransaction";
 import { ColumnDef } from "@tanstack/react-table";
 import { endOfDay } from "date-fns";
-import { TransactionForm } from "@/app/mobile/(layout)/add/page";
 import TransactionDialogBox from "@/components/desktop/transactions/transactionDialogBox";
 import dayjs from "dayjs";
 import { ArrowUpDown } from "lucide-react";
@@ -170,8 +169,10 @@ export default function TransactionPage() {
         setCurrentTransaction(transaction);
         setIsTransactionDialogOpen(true);
     }
-    const transactionParams = { id: currentTransaction?._id || "" };
+    const transactionId = currentTransaction?._id || "" ;
 
+
+  
     const exportTransaction = async (format: string) => {
         if (filteredTransactions.length === 0) {
             return errorToast("No transactions to export");
@@ -199,7 +200,7 @@ export default function TransactionPage() {
                 <div className="z-50 absolute p-5 w-full">
                     <h1 className="text-2xl font-semibold mb-5">Transactions</h1>
                     {isTransactionDialogOpen && currentTransaction && (
-                        <TransactionDialogBox isOpen={isTransactionDialogOpen} setIsOpen={setIsTransactionDialogOpen} params={transactionParams} />
+                        <TransactionDialogBox isOpen={isTransactionDialogOpen} setIsOpen={setIsTransactionDialogOpen} id={transactionId} />
                     )}
                     <Link href="/transactions/create">
                         <Button>Add New Transaction</Button>
