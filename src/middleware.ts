@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import React from "react";
 import { getMobileRoute, isAPIRoute, isMobile, isMobileRoute } from "./lib/route";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { DESKTOP_HOME_PAGE, MOBILE_HOME_PAGE } from "./constants/route";
 import { Route } from "./enums/route";
 
@@ -11,9 +11,11 @@ const publicPaths = [
   "/login",
   "/signup",
   "/welcome",
+  "/forgot-password",
   "/mobile/login",
   "/mobile/signup",
   "/mobile/welcome",
+  "/mobile/forgot-password"
 ];
 
 const redirectTo = (url: string, req: NextRequest) => {
@@ -21,7 +23,7 @@ const redirectTo = (url: string, req: NextRequest) => {
 };
 
 export default async function middleware(req: NextRequest) {
-  const {pathname} = new URL(req.url);
+  const {pathname,searchParams} = new URL(req.url);
   const userAgent = req.headers.get("user-agent") ?? "";
 
   if (pathname.startsWith("/_next")) {
@@ -47,6 +49,13 @@ export default async function middleware(req: NextRequest) {
     return redirectTo(redirectPath,req);
   }
   if(!token && !isPubliPath && !isAPIRoute(pathname)){
+    if(pathname.includes('reset-password')){
+      const token = searchParams.get("token");
+      if (!token) {
+        return redirectTo(Route.LOGIN, req);
+      }
+      return NextResponse.next();
+    }
     if(pathname === MOBILE_HOME_PAGE || pathname === DESKTOP_HOME_PAGE){
       return NextResponse.next();
     }
