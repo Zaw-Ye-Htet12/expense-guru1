@@ -16,7 +16,7 @@ export type Cateogry = {
 }
 
 
-export default function CategoryPage() {
+const CategoryPage=()=> {
   const { categories, isFetching, deleteCategory, editCategory, loading, createCategory } = useCategory();
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
@@ -24,6 +24,7 @@ export default function CategoryPage() {
   const [currentEditCategory, setCurrentEditCategory] = useState<Cateogry | null>(null);
   const [selectedCategories,setSelectedCategories] = useState<string[]>([]);
   const [isDeleteDialogOpen,setIsDeleteDialogOpen] = useState<boolean>(false);
+  const [isBulkDelete,setIsBulkDelete] = useState<boolean>(false);
 
   const columns: ColumnDef<Cateogry>[] = [
     {
@@ -118,6 +119,7 @@ export default function CategoryPage() {
       await deleteCategory(categoryId);
     }
     setSelectedCategories([]); 
+    setIsDeleteDialogOpen(false)
   };
 
   const openEditDialog = (category: Cateogry) => {
@@ -128,6 +130,11 @@ export default function CategoryPage() {
   const openDeleteDialog = (category: Cateogry) => {
     setCurrentEditCategory(category);
     setIsDeleteDialogOpen(true);
+    setIsBulkDelete(false)
+  };
+  const openDeleteSelectedDialog = () => {
+    setIsDeleteDialogOpen(true);
+    setIsBulkDelete(true); // Set to bulk delete
   };
 
   const handleDelete = async(id: string) => {
@@ -165,16 +172,16 @@ export default function CategoryPage() {
             isLoading={loading}
           />
            {selectedCategories.length > 0 && (
-            <Button variant="destructive" onClick={deleteSelectedCategories} className="ms-2">
+            <Button variant="destructive" onClick={openDeleteSelectedDialog} className="ms-2">
               Delete Selected ({selectedCategories.length})
             </Button>
           )}
 
-          {isDeleteDialogOpen && currentEditCategory && (
+          {isDeleteDialogOpen  && (
             <DeleteModal
             isOpen={isDeleteDialogOpen}
             onCancel={() => setIsDeleteDialogOpen(false)}
-            onDelete={()=>handleDelete(currentEditCategory._id)}
+            onDelete={isBulkDelete ? deleteSelectedCategories : () => handleDelete(currentEditCategory?._id!)}
           />
           )}
           <DataTable key={categories.length} dataName="categories" isLoading={isFetching} columns={columns} data={categories} filterableColumns={['name']}/>
@@ -202,3 +209,5 @@ export default function CategoryPage() {
     </div>
   )
 }
+
+export default CategoryPage;

@@ -80,60 +80,64 @@ const ProfileEditForm = () => {
             defaultValue={initialValue.email}
           />
         </div>
-        {!isChangePassword && (
-          <div className="px-4 mt-4">
-            <span
-              className="text-primary cursor-pointer"
-              onClick={() => setIsChangePassword(true)}
-            >
-              Change passoword?
-            </span>
-          </div>
-        )}
-        {isChangePassword && (
+        {!authUser.Oauth && (
           <>
-            <div className="px-4 mt-4 w-full flex flex-col gap-3">
-              <Label htmlFor="currentPassword">
-                <span>Current Password</span>
-              </Label>
-              <FormField
-                as={Input}
-                name="currentPassword"
-                type="text"
-                id="currentPassword"
-              />
-              {passwordError && (
-                <div className="text-red-500 text-sm">{passwordError}</div>
-              )}
-            </div>
+            {!isChangePassword && (
+              <div className="px-4 mt-4">
+                <span
+                  className="text-primary cursor-pointer"
+                  onClick={() => setIsChangePassword(true)}
+                >
+                  Change passoword?
+                </span>
+              </div>
+            )}
+            {isChangePassword && (
+              <>
+                <div className="px-4 mt-4 w-full flex flex-col gap-3">
+                  <Label htmlFor="currentPassword">
+                    <span>Current Password</span>
+                  </Label>
+                  <FormField
+                    as={Input}
+                    name="currentPassword"
+                    type="text"
+                    id="currentPassword"
+                  />
+                  {passwordError && (
+                    <div className="text-red-500 text-sm">{passwordError}</div>
+                  )}
+                </div>
 
-            <div className="px-4 mt-4 w-full flex flex-col gap-3">
-              <Label htmlFor="newPassword">
-                <span>New Password</span>
-              </Label>
-              <FormField
-                as={Input}
-                name="newPassword"
-                type="password"
-                id="newPassword"
-              />
-            </div>
-            <div className="px-4 mt-4 w-full flex flex-col gap-3">
-              <Label htmlFor="confirmPassword">
-                <span>Confirm Password</span>
-              </Label>
-              <FormField
-                as={Input}
-                name="confirmPassword"
-                type="password"
-                id="confirmPassword"
-              />
-            </div>
+                <div className="px-4 mt-4 w-full flex flex-col gap-3">
+                  <Label htmlFor="newPassword">
+                    <span>New Password</span>
+                  </Label>
+                  <FormField
+                    as={Input}
+                    name="newPassword"
+                    type="password"
+                    id="newPassword"
+                  />
+                </div>
+                <div className="px-4 mt-4 w-full flex flex-col gap-3">
+                  <Label htmlFor="confirmPassword">
+                    <span>Confirm Password</span>
+                  </Label>
+                  <FormField
+                    as={Input}
+                    name="confirmPassword"
+                    type="password"
+                    id="confirmPassword"
+                  />
+                </div>
+              </>
+            )}
           </>
         )}
 
         <div className=" px-4 mt-4 flex  gap-3 justify-end">
-          <Button className=" bg-destructive" type="button" onClick={()=>back()}>Cancel</Button>
+          <Button className=" bg-destructive" type="button" onClick={() => back()}>Cancel</Button>
           <Button className="" type="submit">
             Save
           </Button>
