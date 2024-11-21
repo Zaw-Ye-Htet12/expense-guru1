@@ -1,3 +1,4 @@
+'use client'
 import { Form, Formik } from "formik";
 import { FormField } from "./formField";
 import { Input } from "../ui/input";
