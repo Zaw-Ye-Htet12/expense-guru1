@@ -150,6 +150,7 @@ export function useLogin() {
     }
   }
   useEffect(() => {
+    console.log(isLoggedIn);
     if (isLoggedIn) {
       router.push(getRelevantRoute(Route.HOME));
       router.refresh();
