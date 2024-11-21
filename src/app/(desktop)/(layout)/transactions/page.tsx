@@ -1,6 +1,6 @@
 "use client"
 import { DataTable } from "@/components/common/data-table";
-import { DatePickerWithRange } from "@/components/common/datePicker";
+import { DatePickerWithRange } from "@/components/common/datePickerRange";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,8 +19,8 @@ import { exportData } from "@/utils/frontend/exportData";
 import { formatMoney } from "@/utils/frontend/money";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
 import { useToastHook } from "@/hooks/useToastHook";
+import dynamic from "next/dynamic";
 
 export type Transaction = {
     _id: string,
@@ -33,7 +33,7 @@ export type Transaction = {
     updatedAt: string
 }
 
-export default function TransactionPage() {
+const TransactionPage = () => {
     const { errorToast, successToast } = useToastHook();
     const { transactions, isFetching } = useTransaction();
     const [typeFilter, setTypeFilter] = useState<string>('');
@@ -173,20 +173,25 @@ export default function TransactionPage() {
     const transactionId = currentTransaction?._id || "" ;
 
 
-    const exportTransaction = async (format:string) => {
-        const transactionMapper = (transaction: Transaction) => ({
-            ID: transaction._id,
-            Amount: formatMoney(transaction.amount),
-            Category: transaction.categoryId?.name || "Uncategorized",
-            Type: transaction.type,
-            Note: transaction.note || "N/A",
-            CreatedAt: new Date(transaction.createdAt).toLocaleDateString(),
-        });
-        if(format === "csv"){
-            exportData(filteredTransactions, 'csv', 'Transactions', transactionMapper)
-        }else if(format === "xlsx"){
-            exportData(filteredTransactions, 'xlsx', 'Transactions', transactionMapper)
+  
+    const exportTransaction = async (format: string) => {
+        if (filteredTransactions.length === 0) {
+            return errorToast("No transactions to export");
+        } else {
 
+            const transactionMapper = (transaction: Transaction) => ({
+                ID: transaction._id,
+                Amount: formatMoney(transaction.amount),
+                Category: transaction.categoryId?.name || "Uncategorized",
+                Type: transaction.type,
+                Note: transaction.note || "N/A",
+                CreatedAt: new Date(transaction.createdAt).toLocaleDateString(),
+            });
+            if (format === "csv") {
+                exportData(filteredTransactions, format, 'Transactions', transactionMapper);
+            } else if (format === "xlsx") {
+                exportData(filteredTransactions, format, 'Transactions', transactionMapper);
+            }
         }
 
     }
@@ -206,10 +211,8 @@ export default function TransactionPage() {
                             <Button className="ms-2">Export</Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-
                             <DropdownMenuItem onClick={() => exportTransaction('csv')}>CSV</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => exportTransaction('xlsx')}>XLSX</DropdownMenuItem>
-
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <DataTable
@@ -228,3 +231,7 @@ export default function TransactionPage() {
         </div>
     )
 }
+
+export default dynamic(() => Promise.resolve(TransactionPage), {
+    ssr: false
+})

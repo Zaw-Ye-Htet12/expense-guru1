@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { useLogin } from "@/hooks/useLogin";
 import TotalBalance from "@/components/common/totalBalance";
 import Greeting from "@/components/common/greeting";
@@ -11,11 +11,11 @@ import { useWallet } from "@/hooks/useWallet";
 import { PieChartDonut } from "@/components/common/piechart";
 import { BarChartComponent } from "@/components/common/barchart";
 import { useTransaction } from "@/hooks/useTransaction";
+import dynamic from "next/dynamic";
 
 const Page = () => {
   const { authUser } = useLogin();
   const { totalBalance } = useWallet();
-
   const financeCards = [
     {
       label: "Total balance",
@@ -84,4 +84,6 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default dynamic(() => Promise.resolve(Page), {
+  ssr: false
+})

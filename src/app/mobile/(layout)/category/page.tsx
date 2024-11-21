@@ -8,7 +8,7 @@ import CategoryList from "@/components/mobile/category/categoryList"
 export default function Category() {
     return (
         <div className="w-full h-full flex flex-col">
-            <div className="relative w-full flex-1 z-10 flex flex-col items-center justify-start">
+            <div className="relative w-full flex-1 flex flex-col items-center justify-start">
                 <Image src={Bg} alt="background" className="w-screen" priority />
                 <WithSuspense>
                     <CategoryList />

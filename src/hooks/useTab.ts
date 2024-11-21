@@ -1,7 +1,7 @@
 import { TransactionTab } from "@/enums/transactionTab";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { createQueryString } from "@/lib/route";
 
 export const useTab = () => {

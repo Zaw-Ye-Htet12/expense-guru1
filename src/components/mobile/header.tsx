@@ -20,11 +20,11 @@ const Header = () => {
     const {back} = useRouter();
     let currentPath = usePathname();
     const isHome = currentPath === "/mobile/home";
-    currentPath = currentPath.includes("/transaction") ? getRelevantRoute(Route.TRANSACTION) : currentPath;
+    currentPath = currentPath.includes("/transactions") ? getRelevantRoute(Route.TRANSACTION) : currentPath;
     return (
         <>
             {!isHome && (
-                <div className="z-30 fixed top-0 left-0 w-full h-16 p-4 text-white text-lg flex items-center">
+                <div className="z-10 fixed top-0 left-0 w-full h-16 p-4 text-white text-lg flex items-center">
                     <ChevronLeftIcon 
                         width={25}
                         height={25}

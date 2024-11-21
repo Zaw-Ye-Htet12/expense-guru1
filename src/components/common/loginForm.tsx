@@ -65,6 +65,9 @@ const LoginForm = ({ className = "w-full" }: { className?: string }) => {
               >
                 {loading ? <Loading /> : "Login"}
               </Button>
+              <div>
+                <Link href={getRelevantRoute(Route.FORGOTPASSWORD)} className="text-primary underline">Forgot password?</Link>
+              </div>
               <div className="flex w-full justify-center items-center">Or</div>
               <Button
                 className="w-full bg-white text-[#51A7A1] border"
