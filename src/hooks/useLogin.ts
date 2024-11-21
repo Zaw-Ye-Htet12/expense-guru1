@@ -33,7 +33,7 @@ export function useLogin() {
     try {
       const {
         data: { data },
-      } = await axiosPrivateInstance.get("/auth/me");
+      } = await axiosPrivateInstance.get("/auth/me", {withCredentials: true});
       const userData = {
         id: data.id,
         username: data.username,
