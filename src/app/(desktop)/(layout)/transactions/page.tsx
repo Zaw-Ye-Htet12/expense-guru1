@@ -20,6 +20,7 @@ import { formatMoney } from "@/utils/frontend/money";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToastHook } from "@/hooks/useToastHook";
+import dynamic from "next/dynamic";
 
 export type Transaction = {
     _id: string,
@@ -32,7 +33,7 @@ export type Transaction = {
     updatedAt: string
 }
 
-export default function TransactionPage() {
+const TransactionPage = () => {
     const { errorToast, successToast } = useToastHook();
     const { transactions, isFetching } = useTransaction();
     const [typeFilter, setTypeFilter] = useState<string>('');
@@ -230,3 +231,7 @@ export default function TransactionPage() {
         </div>
     )
 }
+
+export default dynamic(() => Promise.resolve(TransactionPage), {
+    ssr: false
+})

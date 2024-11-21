@@ -1,7 +1,8 @@
 import { TransactionForm } from "@/components/common/transactionForm"
+import dynamic from "next/dynamic"
 import Link from "next/link"
 
-export default function CreatePage(){
+const CreatePage = () =>{
     return (
         <div className="h-full -z-10">
         <div className="w-full h-32 relative">
@@ -16,3 +17,7 @@ export default function CreatePage(){
     </div>
     )
 }
+
+export default dynamic(() => Promise.resolve(CreatePage), {
+  ssr: false,
+});

@@ -5,6 +5,7 @@ import React from "react";
 import Bg from "../../../../../public/home-bg.png";
 import SegmentedControl from "@/components/ui/segmented-control";
 import StatisticCharts from "@/components/common/statisticCharts";
+import dynamic from "next/dynamic";
 
 const StatisticPage = () => {
   return (
@@ -19,4 +20,6 @@ const StatisticPage = () => {
   );
 };
 
-export default StatisticPage;
+export default dynamic(() => Promise.resolve(StatisticPage), {
+  ssr: false,
+});
