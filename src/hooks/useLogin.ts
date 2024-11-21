@@ -80,6 +80,8 @@ export function useLogin() {
         setAccessToken(data.accessToken);
         await setLoggedInUserData();
         setIsLoggedIn(true);
+        router.push(getRelevantRoute(Route.HOME))
+        router.refresh()
       }
     } catch (error: any) {
       setLoading(false);
@@ -149,13 +151,13 @@ export function useLogin() {
       );
     }
   }
-  useEffect(() => {
-    console.log(isLoggedIn);
-    if (isLoggedIn) {
-      router.push(getRelevantRoute(Route.HOME));
-      router.refresh();
-    }
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   console.log(isLoggedIn);
+  //   if (isLoggedIn) {
+  //     router.push(getRelevantRoute(Route.HOME));
+  //     router.refresh();
+  //   }
+  // }, [isLoggedIn]);
 
   return {
     login,
