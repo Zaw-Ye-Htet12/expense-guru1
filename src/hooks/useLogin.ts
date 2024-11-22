@@ -81,7 +81,6 @@ export function useLogin() {
         await setLoggedInUserData();
         setLoading(false);
         setIsLoggedIn(true);
-        window.location.href=getRelevantRoute(Route.HOME)
       }
     } catch (error: any) {
       setLoading(false);
@@ -151,14 +150,14 @@ export function useLogin() {
       );
     }
   }
-  // useEffect(() => {
-  //   console.log(isLoggedIn);
-  //   if (isLoggedIn) {
-  //     router.push(getRelevantRoute(Route.HOME));
-  //     router.refresh();
-  //     console.log("redirected to the home page after authenticating....")
-  //   }
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    console.log(isLoggedIn);
+    if (isLoggedIn) {
+      router.push(getRelevantRoute(Route.HOME));
+      router.refresh();
+      console.log("redirected to the home page after authenticating....")
+    }
+  }, [isLoggedIn]);
 
   return {
     login,
